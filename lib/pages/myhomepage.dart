@@ -22,7 +22,10 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-  Future<dynamic> fetchContacts() {
+  final orpc = OdooClient("https://tps.transbenua.com");
+
+  Future<dynamic> fetchCN() async {
+    await orpc.authenticate('test_transbenua', 'tbl', 'tbl');
     return orpc.callKw({
       'model': 'dps.cn_pibk',
       'method': 'search_read',
@@ -32,7 +35,7 @@ class _MainPageState extends State<MainPage> {
         'domain': [
           ['barcode', '=', code]
         ],
-        'fields': ['id', 'name', 'email', '__last_update', 'image_128'],
+        'fields': ['id', 'nm_shipper', 'nm_consignee', 'barcode'],
         'limit': 80,
       },
     });
