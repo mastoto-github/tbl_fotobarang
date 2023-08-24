@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:odoo_rpc/odoo_rpc.dart';
+import 'package:tbl_fotobarang/pages/cndetail.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -11,33 +12,14 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   @override
-  String code = "";
-  String getcode = "";
 
+  //final orpc = OdooClient("https://tps.transbenua.com");
   Future scanbarcode() async {
-    getcode = await FlutterBarcodeScanner.scanBarcode(
-        "#FFFF0000", "Batal", false, ScanMode.BARCODE);
-    setState(() {
-      code = getcode;
-    });
-  }
-
-  final orpc = OdooClient("https://tps.transbenua.com");
-
-  Future<dynamic> fetchCN() async {
-    await orpc.authenticate('test_transbenua', 'tbl', 'tbl');
-    return orpc.callKw({
-      'model': 'dps.cn_pibk',
-      'method': 'search_read',
-      'args': [],
-      'kwargs': {
-        'context': {'bin_size': true},
-        'domain': [
-          ['barcode', '=', code]
-        ],
-        'fields': ['id', 'nm_shipper', 'nm_consignee', 'barcode'],
-        'limit': 80,
-      },
+    await FlutterBarcodeScanner.scanBarcode(
+            "#FFFF0000", "Batal", false, ScanMode.BARCODE)
+        .then((String kode) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Cndetail(kode)));
     });
   }
 
@@ -58,7 +40,7 @@ class _MainPageState extends State<MainPage> {
               onPressed: () {
                 scanbarcode();
               }),
-          Text(code)
+          //Text(code)
         ],
       )),
     );

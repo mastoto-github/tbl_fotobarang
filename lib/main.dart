@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:odoo_rpc/odoo_rpc.dart';
 import 'package:tbl_fotobarang/pages/myhomepage.dart';
 
-void main() {
+void main() async {
+  final orpc = OdooClient("https://tps.transbenua.com");
+  final session = await orpc.authenticate('test_transbenua', 'tbl', 'tbl');
+
   runApp(const MyApp());
 }
 
