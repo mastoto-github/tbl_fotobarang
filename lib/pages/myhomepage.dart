@@ -23,8 +23,8 @@ class _MainPageState extends State<MainPage> {
     //Navigator.push(
     //context, MaterialPageRoute(builder: (context) => Cndetail(kode)));
 
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => Cndetail("MBA0615")));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const Cndetail("MBA0615")));
     //});
   }
 
@@ -32,7 +32,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Upload Foto Pemeriksaan"),
+        title: const Text("Upload Data Pemeriksaan"),
       ),
       body: Center(
           child: Column(

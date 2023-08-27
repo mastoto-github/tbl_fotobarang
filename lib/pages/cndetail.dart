@@ -32,15 +32,16 @@ class _CndetailState extends State<Cndetail> {
     var img = await FlutterImageCompress.compressAndGetFile(
       image!.absolute.path,
       image!.path + 'cmp.jpg',
-      quality: 75,
+      quality: 70,
     );
 
     List<int> imageBytes = await img!.readAsBytes();
     b64String = base64Encode(imageBytes);
     //debugPrint(b64String);
-    imgList.add(image!);
-    b64List.add(b64String!);
-    setState(() {});
+    setState(() {
+      imgList.add(image!);
+      b64List.add(b64String!);
+    });
   }
 
   Future<dynamic> fetchCN() async {
@@ -88,6 +89,24 @@ class _CndetailState extends State<Cndetail> {
         periksaId = value;
       }
     });
+    //debugPrint('periksaId awal : ${periksaId}');
+    //await client.authenticate('testphoto_transbenua', 'admin', 'admindps');
+    //int i = 0;
+    for (var i = 0; i < b64List.length; i++) {
+      await client.callKw({
+        'model': 'dps.foto.detail',
+        'method': 'create',
+        'args': [
+          {
+            'name': widget.code + "-" + i.toString(),
+            'periksa_id': periksaId,
+            'isi_foto': b64List[i]
+          },
+        ],
+        'kwargs': {},
+      }).then((value) {});
+      ;
+    }
   }
 
   @override
@@ -122,7 +141,7 @@ class _CndetailState extends State<Cndetail> {
                             await getImage();
                           },
                           child: const Text(
-                            "Ambil Foto",
+                            "Tambahkan Foto",
                             style: TextStyle(fontSize: 20, color: Colors.blue),
                           )),
                       Expanded(
@@ -130,7 +149,7 @@ class _CndetailState extends State<Cndetail> {
                               crossAxisCount: 2,
                               crossAxisSpacing: 10,
                               mainAxisSpacing: 10,
-                              padding: EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(10),
                               children: <Widget>[
                             Container(
                               height: 100,
@@ -191,7 +210,7 @@ class _CndetailState extends State<Cndetail> {
                           ])),
                       TextFormField(
                         minLines: 2,
-                        maxLines: 7,
+                        maxLines: 11,
                         keyboardType: TextInputType.multiline,
                         decoration: const InputDecoration(
                             hintText: 'Hasil Pemeriksaan',
@@ -199,7 +218,7 @@ class _CndetailState extends State<Cndetail> {
                             border:
                                 OutlineInputBorder(borderSide: BorderSide())),
                       ),
-                      TextButton(
+                      ElevatedButton(
                           onPressed: () async {
                             await sendPhoto();
                           },
