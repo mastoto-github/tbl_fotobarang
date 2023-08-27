@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:odoo_rpc/odoo_rpc.dart';
+import 'package:tbl_fotobarang/main.dart';
 import 'package:tbl_fotobarang/pages/cndetail.dart';
+import 'package:tbl_fotobarang/pages/testpage.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -15,12 +17,15 @@ class _MainPageState extends State<MainPage> {
 
   //final orpc = OdooClient("https://tps.transbenua.com");
   Future scanbarcode() async {
-    await FlutterBarcodeScanner.scanBarcode(
-            "#FFFF0000", "Batal", false, ScanMode.BARCODE)
-        .then((String kode) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Cndetail(kode)));
-    });
+    //await FlutterBarcodeScanner.scanBarcode(
+    //      "#FFFF0000", "Batal", false, ScanMode.BARCODE)
+    //.then((String kode) {
+    //Navigator.push(
+    //context, MaterialPageRoute(builder: (context) => Cndetail(kode)));
+
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => Cndetail("MBA0615")));
+    //});
   }
 
   Widget build(BuildContext context) {

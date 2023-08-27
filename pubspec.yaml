@@ -38,6 +38,10 @@ dependencies:
   flutter_barcode_scanner: ^2.0.0
   http: ^1.1.0
   odoo_rpc: ^0.5.2
+  image_picker: ^0.8.3+2
+  flutter_image_compress: ^2.0.4
+   
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
