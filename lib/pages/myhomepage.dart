@@ -28,10 +28,10 @@ class _MainPageState extends State<MainPage> {
           MaterialPageRoute(
               builder: (context) => Cndetail(kode, selectedValue!.id!)));
 
-      //Navigator.push(
-      //    context,
-      //    MaterialPageRoute(
-      //        builder: (context) => Cndetail('MBA0615', selectedValue!.id!)));
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => Cndetail('MBA0813-1', selectedValue!.id!)));
     });
   }
 

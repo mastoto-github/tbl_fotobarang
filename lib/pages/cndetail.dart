@@ -33,7 +33,7 @@ class _CndetailState extends State<Cndetail> {
     image = File(imagePicked!.path);
     var img = await FlutterImageCompress.compressAndGetFile(
       image!.absolute.path,
-      image!.path + 'cmp.jpg',
+      '${image!.path}cmp.jpg',
       quality: 70,
     );
 
@@ -82,7 +82,7 @@ class _CndetailState extends State<Cndetail> {
           'name': widget.code,
           'cn_id': listcn[0]['id'],
           'pegawai_id': widget.pegawaiId,
-          'keterangan': _lhp,
+          'keterangan': _lhp.text,
         },
       ],
       'kwargs': {},
@@ -100,7 +100,7 @@ class _CndetailState extends State<Cndetail> {
         'method': 'create',
         'args': [
           {
-            'name': widget.code + "-" + i.toString(),
+            'name': "${widget.code}-$i",
             'periksa_id': periksaId,
             'isi_foto': b64List[i]
           },
