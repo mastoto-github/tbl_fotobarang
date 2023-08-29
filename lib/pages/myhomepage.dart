@@ -14,18 +14,62 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   @override
+  final orpc = OdooClient("https://tps.transbenua.com");
+  dynamic listpegawai;
+  Pegawai? selectedValue;
+  List<Pegawai?> pegawai = [];
 
-  //final orpc = OdooClient("https://tps.transbenua.com");
   Future scanbarcode() async {
-    //await FlutterBarcodeScanner.scanBarcode(
-    //      "#FFFF0000", "Batal", false, ScanMode.BARCODE)
-    //.then((String kode) {
-    //Navigator.push(
-    //context, MaterialPageRoute(builder: (context) => Cndetail(kode)));
+    await FlutterBarcodeScanner.scanBarcode(
+            "#FFFF0000", "Batal", false, ScanMode.BARCODE)
+        .then((String kode) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Cndetail(kode)));
 
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => const Cndetail("MBA0615")));
-    //});
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Cndetail('MBA0615', selectedValue!.id!)));
+    });
+  }
+
+  Future getpegawai() async {
+    final session =
+        await orpc.authenticate('testphoto_transbenua', 'tbl', 'tbl');
+    await orpc.callKw({
+      'model': 'dps.pegawai.periksa',
+      'method': 'search_read',
+      'args': [],
+      'kwargs': {
+        'context': {'bin_size': true},
+        'domain': [
+          ['is_absen', '=', true]
+        ],
+        'fields': ['id', 'name'],
+        'limit': 20,
+      },
+    }).then((value) {
+      if (value != null) {
+        setState(() {
+          listpegawai = value;
+        });
+      }
+    });
+    int? vid;
+    String? vname;
+    setState(() {
+      for (var i = 0; i < listpegawai.length; i++) {
+        vid = listpegawai[i]['id'];
+        vname = listpegawai[i]['name'];
+        pegawai.add(Pegawai(id: vid, name: vname));
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    getpegawai();
+    super.initState();
   }
 
   Widget build(BuildContext context) {
@@ -33,10 +77,32 @@ class _MainPageState extends State<MainPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("Upload Data Pemeriksaan"),
+        backgroundColor: Colors.blue,
       ),
       body: Center(
           child: Column(
         children: <Widget>[
+          const SizedBox(
+            height: 30,
+          ),
+          const Text("Petugas Pemeriksa", style: TextStyle(fontSize: 20)),
+          DropdownButton<Pegawai?>(
+            value: selectedValue,
+            onChanged: (value) async {
+              setState(() {
+                selectedValue = value;
+              });
+            },
+            items: pegawai
+                .map<DropdownMenuItem<Pegawai>>((e) => DropdownMenuItem(
+                      value: e,
+                      child: Text((e?.name ?? '').toString()),
+                    ))
+                .toList(),
+          ),
+          const SizedBox(
+            height: 30,
+          ),
           TextButton(
               child: const Text(
                 "SCAN BARCODE",
@@ -45,9 +111,15 @@ class _MainPageState extends State<MainPage> {
               onPressed: () {
                 scanbarcode();
               }),
-          //Text(code)
         ],
       )),
     );
   }
+}
+
+class Pegawai {
+  int? id;
+  String? name;
+
+  Pegawai({this.id, this.name});
 }

@@ -9,7 +9,8 @@ import 'package:odoo_rpc/odoo_rpc.dart';
 
 class Cndetail extends StatefulWidget {
   final String code;
-  const Cndetail(this.code, {super.key});
+  final int pegawaiId;
+  const Cndetail(this.code, this.pegawaiId, {super.key});
   @override
   State<Cndetail> createState() => _CndetailState();
 }
@@ -20,7 +21,8 @@ class _CndetailState extends State<Cndetail> {
   File? image, image2, image3, image4;
   String? b64String;
   int? periksaId;
-  int? pegawaiId;
+  final TextEditingController _lhp = TextEditingController();
+  //int? pegawaiId;
   final ImagePicker _picker = ImagePicker();
   final List<File> imgList = [];
   final List<String> b64List = [];
@@ -79,8 +81,8 @@ class _CndetailState extends State<Cndetail> {
         {
           'name': widget.code,
           'cn_id': listcn[0]['id'],
-          'pegawai_id': pegawaiId,
-          'keterangan': 'Disini Hasil Pemeriksaan'
+          'pegawai_id': widget.pegawaiId,
+          'keterangan': _lhp,
         },
       ],
       'kwargs': {},
@@ -124,7 +126,7 @@ class _CndetailState extends State<Cndetail> {
       ),
       body: listcn == null
           ? const Text(
-              "Data CN Tidak Ditemukan",
+              "Info Data CN :",
               style: TextStyle(fontSize: 18),
             )
           : Center(
@@ -211,6 +213,7 @@ class _CndetailState extends State<Cndetail> {
                       TextFormField(
                         minLines: 2,
                         maxLines: 11,
+                        controller: _lhp,
                         keyboardType: TextInputType.multiline,
                         decoration: const InputDecoration(
                             hintText: 'Hasil Pemeriksaan',
