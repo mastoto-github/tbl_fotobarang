@@ -24,12 +24,14 @@ class _MainPageState extends State<MainPage> {
             "#FFFF0000", "Batal", false, ScanMode.BARCODE)
         .then((String kode) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Cndetail(kode)));
-
-      Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => Cndetail('MBA0615', selectedValue!.id!)));
+              builder: (context) => Cndetail(kode, selectedValue!.id!)));
+
+      //Navigator.push(
+      //    context,
+      //    MaterialPageRoute(
+      //        builder: (context) => Cndetail('MBA0615', selectedValue!.id!)));
     });
   }
 
