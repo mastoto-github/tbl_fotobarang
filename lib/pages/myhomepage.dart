@@ -36,8 +36,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   Future getpegawai() async {
-    final session =
-        await orpc.authenticate('testphoto_transbenua', 'tbl', 'tbl');
+    final session = await orpc.authenticate('transbenua', 'tbl', 'tbl');
     await orpc.callKw({
       'model': 'dps.pegawai.periksa',
       'method': 'search_read',
