@@ -40,6 +40,7 @@ dependencies:
   odoo_rpc: ^0.5.2
   image_picker: ^0.8.3+2
   flutter_image_compress: ^2.0.4
+  cool_alert: ^2.0.1
    
 
 dev_dependencies:
