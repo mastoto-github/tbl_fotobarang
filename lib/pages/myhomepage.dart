@@ -1,3 +1,4 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:odoo_rpc/odoo_rpc.dart';
@@ -17,22 +18,87 @@ class _MainPageState extends State<MainPage> {
   final orpc = OdooClient("https://tps.transbenua.com");
   dynamic listpegawai;
   Pegawai? selectedValue;
+  dynamic vkode, vreskode;
+  dynamic nresp, vresp;
   List<Pegawai?> pegawai = [];
+  // final client = OdooClient('https://tps.transbenua.com');
+  dynamic listcn;
 
   Future scanbarcode() async {
     await FlutterBarcodeScanner.scanBarcode(
             "#FFFF0000", "Batal", false, ScanMode.BARCODE)
-        .then((String kode) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Cndetail(kode, selectedValue!.id!)));
+        .then((String kode) async {
+      setState(() {
+        vkode = kode;
+      });
+      //print(vkode);
+      vreskode = await fetchCN();
+      //print(listcn[0]['end_respon']);
+      if (listcn.length > 0) {
+        vresp = listcn[0]['end_respon'];
+      } else {
+        vresp = "N";
+      }
+      nresp = vresp?[0];
 
-      // Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => Cndetail('MBA0813-1', selectedValue!.id!)));
+      if (nresp == "4") {
+        // ignore: use_build_context_synchronously
+        CoolAlert.show(
+          context: context,
+          type: CoolAlertType.confirm,
+          title: "$vkode : Barang sudah dapat dikeluarkan",
+          text: "Rekam pengeluaran ?",
+          confirmBtnText: 'Ya',
+          cancelBtnText: 'Tidak',
+          confirmBtnColor: Colors.green,
+          onConfirmBtnTap: () {},
+        );
+      } else if (nresp == "N") {
+        // ignore: use_build_context_synchronously
+        CoolAlert.show(
+            context: context,
+            type: CoolAlertType.error,
+            title: "Tidak ditemukan!",
+            text: "Data barang tidak ditemukan di aplikasi",
+            autoCloseDuration: const Duration(seconds: 2));
+      } else {
+        // ignore: use_build_context_synchronously
+        CoolAlert.show(
+            context: context,
+            type: CoolAlertType.warning,
+            title: listcn[0]['end_respon'],
+            text: "$vkode : Barang belum dapat dikeluarkan",
+            autoCloseDuration: const Duration(seconds: 3));
+      }
     });
+  }
+
+  Future<dynamic> fetchCN() async {
+    final session = await orpc.authenticate('transbenua', 'tbl', 'tbl');
+    await orpc.callKw({
+      'model': 'dps.cn.pibk',
+      'method': 'search_read',
+      'args': [],
+      'kwargs': {
+        'context': {'bin_size': true},
+        'domain': [
+          ['name', '=', vkode]
+        ],
+        'fields': ['no_master', 'nama_penerima', 'end_respon'],
+        'limit': 2,
+      },
+    }).then((value) {
+      if (value != null) {
+        setState(() {
+          listcn = value;
+        });
+      } else {
+        setState(() {
+          listcn = "0";
+        });
+      }
+    });
+    return listcn;
   }
 
   Future getpegawai() async {
@@ -56,6 +122,7 @@ class _MainPageState extends State<MainPage> {
         });
       }
     });
+
     int? vid;
     String? vname;
     setState(() {
@@ -64,6 +131,23 @@ class _MainPageState extends State<MainPage> {
         vname = listpegawai[i]['name'];
         pegawai.add(Pegawai(id: vid, name: vname));
       }
+    });
+  }
+
+  dynamic? kurs;
+  Future getkurs() async {
+    final session = await orpc.authenticate('transbenua', 'tbl', 'tbl');
+    var res = await orpc.callKw({
+      'model': 'dps.shipment',
+      'method': 'getkurs',
+      'args': ['read'],
+      'kwargs': {},
+    });
+
+    int? vid;
+    String? vname;
+    setState(() {
+      kurs = res;
     });
   }
 
@@ -77,7 +161,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Upload Data Pemeriksaan"),
+        title: const Text("Check Pengeluaran Barang"),
         backgroundColor: Colors.blue,
       ),
       body: Center(
@@ -86,32 +170,23 @@ class _MainPageState extends State<MainPage> {
           const SizedBox(
             height: 30,
           ),
-          const Text("Petugas Pemeriksa", style: TextStyle(fontSize: 20)),
-          DropdownButton<Pegawai?>(
-            value: selectedValue,
-            onChanged: (value) async {
-              setState(() {
-                selectedValue = value;
-              });
-            },
-            items: pegawai
-                .map<DropdownMenuItem<Pegawai>>((e) => DropdownMenuItem(
-                      value: e,
-                      child: Text((e?.name ?? '').toString()),
-                    ))
-                .toList(),
-          ),
+          const Text("Check Barang", style: TextStyle(fontSize: 20)),
           const SizedBox(
             height: 30,
           ),
           TextButton(
               child: const Text(
                 "SCAN BARCODE",
-                style: TextStyle(fontSize: 20, color: Colors.blue),
+                style: TextStyle(fontSize: 20, color: Colors.white),
               ),
-              onPressed: () {
-                scanbarcode();
+              style:
+                  TextButton.styleFrom(backgroundColor: Colors.green.shade500),
+              onPressed: () async {
+                await scanbarcode();
+
+                //await getkurs();
               }),
+          //Text('Kurs: $kurs')
         ],
       )),
     );
