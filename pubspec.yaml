@@ -41,6 +41,7 @@ dependencies:
   image_picker: ^0.8.3+2
   flutter_image_compress: ^2.0.4
   cool_alert: ^2.0.1
+  # audioplayers: ^6.0.0
    
 
 dev_dependencies:

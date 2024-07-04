@@ -4,7 +4,7 @@ import 'package:tbl_fotobarang/pages/myhomepage.dart';
 
 void main() async {
   final orpc = OdooClient("https://tps.transbenua.com");
-  final session = await orpc.authenticate('testphoto_transbenua', 'tbl', 'tbl');
+  final session = await orpc.authenticate('transbenua', 'tbl', 'tbl');
 
   runApp(const MyApp());
 }
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'TBL - Upload Foto Pemeriksaan',
+      title: 'TBL - Check Pengeluaran Barang',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
         useMaterial3: true,

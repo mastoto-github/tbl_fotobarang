@@ -8,44 +8,23 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:odoo_rpc/odoo_rpc.dart';
 
-class Cndetail extends StatefulWidget {
+class Cncheck extends StatefulWidget {
   final String code;
   final int pegawaiId;
-  const Cndetail(this.code, this.pegawaiId, {super.key});
+  const Cncheck(this.code, this.pegawaiId, {super.key});
   @override
-  State<Cndetail> createState() => _CndetailState();
+  State<Cncheck> createState() => _CncheckState();
 }
 
-class _CndetailState extends State<Cndetail> {
+class _CncheckState extends State<Cncheck> {
   final client = OdooClient('https://tps.transbenua.com');
   dynamic listcn;
-  File? image, image2, image3, image4;
   String? b64String;
   int? periksaId;
   final TextEditingController _lhp = TextEditingController();
   //int? pegawaiId;
-  final ImagePicker _picker = ImagePicker();
   final List<File> imgList = [];
   final List<String> b64List = [];
-
-  Future getImage() async {
-    final XFile? imagePicked =
-        await _picker.pickImage(source: ImageSource.camera);
-    image = File(imagePicked!.path);
-    var img = await FlutterImageCompress.compressAndGetFile(
-      image!.absolute.path,
-      '${image!.path}cmp.jpg',
-      quality: 70,
-    );
-
-    List<int> imageBytes = await img!.readAsBytes();
-    b64String = base64Encode(imageBytes);
-    //debugPrint(b64String);
-    setState(() {
-      imgList.add(File(img.path));
-      b64List.add(b64String!);
-    });
-  }
 
   Future<dynamic> fetchCN() async {
     final session = await client.authenticate('transbenua', 'tbl', 'tbl');
@@ -71,49 +50,6 @@ class _CndetailState extends State<Cndetail> {
     return listcn;
   }
 
-  Future<int?> sendPhoto() async {
-    int? _ret;
-    final session =
-        await client.authenticate('transbenua', 'admin', 'admindps');
-    await client.callKw({
-      'model': 'dps.foto.periksa',
-      'method': 'create',
-      'args': [
-        {
-          'name': widget.code,
-          'cn_id': listcn[0]['id'],
-          'pegawai_id': widget.pegawaiId,
-          'keterangan': _lhp.text,
-        },
-      ],
-      'kwargs': {},
-    }).then((value) {
-      if (value != null) {
-        periksaId = value;
-      }
-    });
-    //debugPrint('periksaId awal : ${periksaId}');
-    //await client.authenticate('testphoto_transbenua', 'admin', 'admindps');
-    //int i = 0;
-    for (var i = 0; i < b64List.length; i++) {
-      await client.callKw({
-        'model': 'dps.foto.detail',
-        'method': 'create',
-        'args': [
-          {
-            'name': "${widget.code}-$i",
-            'periksa_id': periksaId,
-            'isi_foto': b64List[i]
-          },
-        ],
-        'kwargs': {},
-      }).then((value) {
-        _ret = i;
-      });
-    }
-    return _ret! + 1;
-  }
-
   @override
   void initState() {
     fetchCN();
@@ -124,7 +60,7 @@ class _CndetailState extends State<Cndetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pemeriksaan Barang'),
+        title: const Text('Check CN'),
         backgroundColor: Colors.blue,
       ),
       body: listcn == null
@@ -144,11 +80,9 @@ class _CndetailState extends State<Cndetail> {
                       Text("Status : ${listcn[0]['hasil_periksa']}",
                           style: const TextStyle(fontSize: 14)),
                       TextButton(
-                          onPressed: () async {
-                            await getImage();
-                          },
+                          onPressed: () async {},
                           child: const Text(
-                            "Hasil Periksa",
+                            "Status Kemasan",
                             style: TextStyle(fontSize: 20, color: Colors.blue),
                           )),
                       Expanded(
@@ -227,21 +161,7 @@ class _CndetailState extends State<Cndetail> {
                                 OutlineInputBorder(borderSide: BorderSide())),
                       ),
                       ElevatedButton(
-                          onPressed: () async {
-                            await sendPhoto().then((value) async {
-                              if (value != null) {
-                                await CoolAlert.show(
-                                    context: context,
-                                    type: CoolAlertType.success,
-                                    text: 'Berhasil Upload $value Foto',
-                                    title: 'Sukses',
-                                    autoCloseDuration:
-                                        const Duration(seconds: 3));
-                                // ignore: use_build_context_synchronously
-                                Navigator.pop(context);
-                              }
-                            });
-                          },
+                          onPressed: () async {},
                           child: const Text(
                             "Upload",
                             style: TextStyle(fontSize: 20, color: Colors.blue),

@@ -148,7 +148,7 @@ class _CndetailState extends State<Cndetail> {
                             await getImage();
                           },
                           child: const Text(
-                            "Hasil Periksa",
+                            "Tambahkan Foto",
                             style: TextStyle(fontSize: 20, color: Colors.blue),
                           )),
                       Expanded(
