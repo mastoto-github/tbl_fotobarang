@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:odoo_rpc/odoo_rpc.dart';
-import 'package:tbl_fotobarang/pages/myhomepage.dart';
+// import 'package:tbl_fotobarang/pages/myhomepage2.dart';
+import 'package:tbl_fotobarang/screens/bottom_nav_bar.dart';
+import 'package:tbl_fotobarang/themes.dart';
+// import 'package:tbl_fotobarang/pages/myhomepage.dart';
 
 void main() async {
   final orpc = OdooClient("https://tps.transbenua.com");
@@ -17,12 +20,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'TBL - Check Pengeluaran Barang',
+      title: 'TBL - Pemuatan Barang',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
-        useMaterial3: true,
-      ),
-      home: const MainPage(),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+          useMaterial3: true,
+          bottomNavigationBarTheme:
+              BottomNavigationBarThemeData(selectedItemColor: redColor)),
+      home: const BottomNavBar(),
     );
   }
 }
