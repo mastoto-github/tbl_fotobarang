@@ -13,7 +13,7 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
-  final _screens = [HomePage(), MuatPage(), CheckPage()];
+  final _screens = [const HomePage(), const MuatPage(), const CheckPage()];
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         items: [
           BottomNavigationBarItem(
               icon: Container(
-                margin: EdgeInsets.symmetric(vertical: 5),
+                margin: const EdgeInsets.symmetric(vertical: 5),
                 child: Image.asset(
                   'assets/icons/home.png',
                   width: 25,
@@ -37,7 +37,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               label: 'Home'),
           BottomNavigationBarItem(
               icon: Container(
-                margin: EdgeInsets.symmetric(vertical: 5),
+                margin: const EdgeInsets.symmetric(vertical: 5),
                 child: Image.asset(
                   'assets/icons/muat-kemasan.png',
                   width: 25,
@@ -47,7 +47,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               label: 'Muat'),
           BottomNavigationBarItem(
               icon: Container(
-                margin: EdgeInsets.symmetric(vertical: 5),
+                margin: const EdgeInsets.symmetric(vertical: 5),
                 child: Image.asset(
                   'assets/icons/check-kemasan.png',
                   width: 25,

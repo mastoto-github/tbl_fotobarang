@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:cool_alert/cool_alert.dart';
@@ -72,7 +71,7 @@ class _CndetailState extends State<Cndetail> {
   }
 
   Future<int?> sendPhoto() async {
-    int? _ret;
+    int? ret;
     final session =
         await client.authenticate('transbenua', 'admin', 'admindps');
     await client.callKw({
@@ -108,10 +107,10 @@ class _CndetailState extends State<Cndetail> {
         ],
         'kwargs': {},
       }).then((value) {
-        _ret = i;
+        ret = i;
       });
     }
-    return _ret! + 1;
+    return ret! + 1;
   }
 
   @override
@@ -162,7 +161,7 @@ class _CndetailState extends State<Cndetail> {
                               height: 100,
                               width: 100,
                               color: Colors.grey,
-                              child: imgList.length > 0
+                              child: imgList.isNotEmpty
                                   ? SizedBox(
                                       height: 200,
                                       width: MediaQuery.of(context).size.width,

@@ -44,6 +44,7 @@ dependencies:
   cool_alert: ^2.0.1
   # audioplayers: ^6.0.0
   google_fonts: ^5.0.0
+  percent_indicator: ^4.2.3
    
 
 dev_dependencies:

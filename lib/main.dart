@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
           useMaterial3: true,
           bottomNavigationBarTheme:
-              BottomNavigationBarThemeData(selectedItemColor: redColor)),
+              const BottomNavigationBarThemeData(selectedItemColor: redColor)),
       home: const BottomNavBar(),
     );
   }

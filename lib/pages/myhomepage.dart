@@ -2,9 +2,6 @@ import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:odoo_rpc/odoo_rpc.dart';
-import 'package:tbl_fotobarang/main.dart';
-import 'package:tbl_fotobarang/pages/cndetail.dart';
-import 'package:tbl_fotobarang/pages/testpage.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -134,7 +131,7 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-  dynamic? kurs;
+  dynamic kurs;
   Future getkurs() async {
     final session = await orpc.authenticate('transbenua', 'tbl', 'tbl');
     var res = await orpc.callKw({
@@ -157,6 +154,7 @@ class _MainPageState extends State<MainPage> {
     super.initState();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -175,17 +173,17 @@ class _MainPageState extends State<MainPage> {
             height: 30,
           ),
           TextButton(
-              child: const Text(
-                "SCAN BARCODE",
-                style: TextStyle(fontSize: 20, color: Colors.white),
-              ),
               style:
                   TextButton.styleFrom(backgroundColor: Colors.green.shade500),
               onPressed: () async {
                 await scanbarcode();
 
                 //await getkurs();
-              }),
+              },
+              child: const Text(
+                "SCAN BARCODE",
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              )),
           //Text('Kurs: $kurs')
         ],
       )),

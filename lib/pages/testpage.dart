@@ -10,6 +10,8 @@ class Product {
 }
 
 class TestPage extends StatelessWidget {
+  const TestPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,11 +33,13 @@ class ProductDetailsPage extends StatelessWidget {
     ],
   );
 
+  ProductDetailsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product Details'),
+        title: const Text('Product Details'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,12 +51,12 @@ class ProductDetailsPage extends StatelessWidget {
               children: [
                 Text(
                   product.name,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   product.description,
-                  style: TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16),
                 ),
               ],
             ),
@@ -60,7 +64,7 @@ class ProductDetailsPage extends StatelessWidget {
           Expanded(
             child: GridView.builder(
               itemCount: product.imageUrls.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2, // Number of columns in the grid
               ),
               itemBuilder: (context, index) {

@@ -1,11 +1,6 @@
-import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 
-import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:odoo_rpc/odoo_rpc.dart';
 
 class Cncheck extends StatefulWidget {
@@ -96,7 +91,7 @@ class _CncheckState extends State<Cncheck> {
                               height: 100,
                               width: 100,
                               color: Colors.grey,
-                              child: imgList.length > 0
+                              child: imgList.isNotEmpty
                                   ? SizedBox(
                                       height: 200,
                                       width: MediaQuery.of(context).size.width,
