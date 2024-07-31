@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:tbl_fotobarang/screens/muat/muat_detil.dart';
+import 'package:tbl_fotobarang/screens/muat/signin_form.dart';
 import 'package:tbl_fotobarang/themes.dart';
 import 'package:odoo_rpc/odoo_rpc.dart';
 
@@ -17,10 +20,11 @@ class _MuatPageState extends State<MuatPage> {
   dynamic listmuat;
   dynamic dnopol;
 
-  // void initState() {
-  //   super.initState();
-  // getmuat();
-  //}
+  @override
+  void initState() {
+    super.initState();
+    // getmuat();
+  }
 
   Widget build(BuildContext context) {
     return Container(
@@ -50,7 +54,7 @@ class _MuatPageState extends State<MuatPage> {
               child: Column(
                 children: [
                   Text(
-                    'Pemuatan Barang',
+                    'Muat Barang',
                     style: kHeading6.copyWith(
                       color: kWhite,
                       fontWeight: FontWeight.w600,
@@ -60,7 +64,7 @@ class _MuatPageState extends State<MuatPage> {
                     height: 5,
                   ),
                   Text(
-                    'Savings Value',
+                    'Pengeluaran Barang',
                     style: kSubtitle2.copyWith(
                       color: kWhite,
                     ),
@@ -77,39 +81,44 @@ class _MuatPageState extends State<MuatPage> {
                     child: CircularProgressIndicator(),
                   );
                 } else if (snapshot.hasData) {
+                  int jmldata = snapshot.data!.length;
                   return Container(
                     child: Column(
                       children: [
                         _portfolioCardList(
+                            snapshot.data[0]['id'],
                             'assets/icons/muat-kemasan.png',
                             snapshot.data[0]['nopol'],
                             snapshot.data[0]['driver'],
                             0.3,
                             snapshot.data[0]['jml_kemasan'],
                             '31 Juli 2024 12:00',
-                            '31 Juli 2024 15:00'),
+                            jmldata.toString()),
                         _portfolioCardList(
+                            jmldata > 1 ? snapshot.data[1]['id'] : 0,
                             'assets/icons/muat-kemasan.png',
-                            snapshot.data[1]['nopol'],
-                            snapshot.data[1]['driver'],
+                            jmldata > 1 ? snapshot.data[1]['nopol'] : '--',
+                            jmldata > 1 ? snapshot.data[1]['driver'] : '--',
                             0.3,
-                            snapshot.data[1]['jml_kemasan'],
+                            jmldata > 1 ? snapshot.data[1]['jml_kemasan'] : 0,
                             '31 Juli 2024 12:00',
                             '31 Juli 2024 15:00'),
                         _portfolioCardList(
+                            jmldata > 2 ? snapshot.data[2]['id'] : 0,
                             'assets/icons/muat-kemasan.png',
-                            snapshot.data[2]['nopol'],
-                            snapshot.data[2]['driver'],
+                            jmldata > 2 ? snapshot.data[2]['nopol'] : '--',
+                            jmldata > 2 ? snapshot.data[2]['driver'] : '--',
                             0.3,
-                            snapshot.data[2]['jml_kemasan'],
+                            jmldata > 2 ? snapshot.data[2]['jml_kemasan'] : 0,
                             '31 Juli 2024 12:00',
                             '31 Juli 2024 15:00'),
                         _portfolioCardList(
+                            jmldata > 3 ? snapshot.data[3]['id'] : 0,
                             'assets/icons/muat-kemasan.png',
-                            snapshot.data[2]['nopol'],
-                            snapshot.data[2]['driver'],
+                            jmldata > 3 ? snapshot.data[3]['nopol'] : '--',
+                            jmldata > 3 ? snapshot.data[3]['driver'] : '--',
                             0.3,
-                            snapshot.data[2]['jml_kemasan'],
+                            jmldata > 3 ? snapshot.data[3]['jml_kemasan'] : 0,
                             '31 Juli 2024 12:00',
                             '31 Juli 2024 15:00'),
                       ],
@@ -118,7 +127,7 @@ class _MuatPageState extends State<MuatPage> {
                 } else {
                   return Container(
                     //padding: EdgeInsets.all(20),
-                    child: Text('No data available'),
+                    child: Text('Belum ada data'),
                   );
                 }
               }),
@@ -128,7 +137,9 @@ class _MuatPageState extends State<MuatPage> {
               horizontal: 30,
             ),
             child: TextButton(
-              onPressed: () {},
+              onPressed: () {
+                _showAnimatedDialog(context, SigninForm());
+              },
               style: TextButton.styleFrom(
                 backgroundColor: kWhite,
                 padding: const EdgeInsets.symmetric(vertical: 15),
@@ -164,6 +175,7 @@ class _MuatPageState extends State<MuatPage> {
   }
 
   Widget _portfolioCardList(
+    int idmuat,
     String icon,
     String title,
     String driver,
@@ -172,99 +184,113 @@ class _MuatPageState extends State<MuatPage> {
     String timein,
     String timeout,
   ) {
-    return Container(
-      margin: const EdgeInsets.only(
-        left: 10,
-        right: 10,
-        top: 10,
-      ),
-      padding: const EdgeInsets.fromLTRB(15, 19, 15, 14),
-      constraints: const BoxConstraints.expand(
-        height: 120,
-      ),
-      decoration: BoxDecoration(
-        color: kWhite,
-        borderRadius: const BorderRadius.all(
-          Radius.circular(15),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MuatDetil(
+                vnopol: title,
+                vdriver: driver,
+                vjmlbrg: amount,
+                vmuatid: idmuat),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(
+          left: 10,
+          right: 10,
+          top: 10,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: kGrey,
-            blurRadius: 1,
-            offset: Offset.fromDirection(1, 2),
-          )
-        ],
-      ),
-      child: Row(
-        children: [
-          SizedBox(
-            height: 55,
-            width: 55,
-            child: CircleAvatar(
-              backgroundColor: kTropicalBlue,
-              child: Image.asset(
-                icon,
-                width: 24,
+        padding: const EdgeInsets.fromLTRB(15, 19, 15, 14),
+        constraints: const BoxConstraints.expand(
+          height: 120,
+        ),
+        decoration: BoxDecoration(
+          color: kWhite,
+          borderRadius: const BorderRadius.all(
+            Radius.circular(15),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: kGrey,
+              blurRadius: 1,
+              offset: Offset.fromDirection(1, 2),
+            )
+          ],
+        ),
+        child: Row(
+          children: [
+            SizedBox(
+              height: 55,
+              width: 55,
+              child: CircleAvatar(
+                backgroundColor: kTropicalBlue,
+                child: Image.asset(
+                  icon,
+                  width: 24,
+                ),
               ),
             ),
-          ),
-          const SizedBox(
-            width: 15,
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      title,
-                      style: kSubtitle1,
-                    ),
-                    const Spacer(),
-                    Text(
-                      driver,
-                      style: kSubtitle2,
-                      textAlign: TextAlign.right,
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                LinearPercentIndicator(
-                  lineHeight: 4,
-                  padding: const EdgeInsets.symmetric(horizontal: 0),
-                  percent: percent,
-                  progressColor: kBlueRibbon,
-                  backgroundColor: kGrey.withOpacity(0.3),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Text(
-                    "Barang Termuat : $amount",
-                    style: kBody2.copyWith(
-                      color: kGrey,
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Text(
-                    timeout,
-                    style: kCaption.copyWith(
-                      color: kLightGray,
-                    ),
-                  ),
-                )
-              ],
+            const SizedBox(
+              width: 15,
             ),
-          )
-        ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        title,
+                        style: kSubtitle1,
+                      ),
+                      const Spacer(),
+                      Text(
+                        driver,
+                        style: kSubtitle2,
+                        textAlign: TextAlign.right,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  LinearPercentIndicator(
+                    lineHeight: 4,
+                    padding: const EdgeInsets.symmetric(horizontal: 0),
+                    percent: percent,
+                    progressColor: kBlueRibbon,
+                    backgroundColor: kGrey.withOpacity(0.3),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      "Barang Termuat : $amount",
+                      style: kBody2.copyWith(
+                        color: kGrey,
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Text(
+                      timeout,
+                      style: kCaption.copyWith(
+                        color: kLightGray,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -300,5 +326,16 @@ class _MuatPageState extends State<MuatPage> {
     //}
     //}
     //);
+  }
+
+  void _showAnimatedDialog(BuildContext context, var val) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            child: val,
+          );
+        }).then((value) => setState(() {}));
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:odoo_rpc/odoo_rpc.dart';
 // import 'package:tbl_fotobarang/pages/myhomepage2.dart';
 import 'package:tbl_fotobarang/screens/bottom_nav_bar.dart';
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'TBL - Pemuatan Barang',
       theme: ThemeData(
