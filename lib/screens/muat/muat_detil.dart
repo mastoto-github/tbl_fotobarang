@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:odoo_rpc/odoo_rpc.dart';
 import 'package:tbl_fotobarang/main.dart';
+import 'package:flutter_beep/flutter_beep.dart';
+import 'package:tbl_fotobarang/screens/muat/tambahkemasan_form.dart';
 
 class MuatDetil extends StatefulWidget {
   final String vnopol;
@@ -89,7 +91,9 @@ class _MuatDetilState extends State<MuatDetil> {
                       child: TextButton(
                           style: TextButton.styleFrom(
                               backgroundColor: Colors.green.shade500),
-                          onPressed: () async {},
+                          onPressed: () async {
+                            _showAnimatedDialog(context, TambahKemasanForm());
+                          },
                           child: const Text(
                             "Tambah Kemasan (Manual)",
                             style: TextStyle(fontSize: 12, color: Colors.white),
@@ -201,6 +205,17 @@ class _MuatDetilState extends State<MuatDetil> {
     });
   }
 
+  void _showAnimatedDialog(BuildContext context, var val) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            child: val,
+          );
+        }).then((value) => setState(() {}));
+  }
+
   Future scanbarcode() async {
     await FlutterBarcodeScanner.scanBarcode(
             "#FFFF0000", "Kembali", false, ScanMode.BARCODE)
@@ -218,6 +233,7 @@ class _MuatDetilState extends State<MuatDetil> {
       }
 
       if (vresp == "N") {
+        FlutterBeep.beep(false);
         // ignore: use_build_context_synchronously
         CoolAlert.show(
             context: context,
@@ -226,6 +242,7 @@ class _MuatDetilState extends State<MuatDetil> {
             text: "Data kemasan tidak ditemukan di aplikasi",
             autoCloseDuration: const Duration(seconds: 2));
       } else if (vresp == "X") {
+        FlutterBeep.beep(false);
         // ignore: use_build_context_synchronously
         CoolAlert.show(
             context: context,
@@ -235,6 +252,7 @@ class _MuatDetilState extends State<MuatDetil> {
             autoCloseDuration: const Duration(seconds: 2));
       } else {
         await insertMuatIds();
+        FlutterBeep.beep();
         // ignore: use_build_context_synchronously
         CoolAlert.show(
             context: context,
