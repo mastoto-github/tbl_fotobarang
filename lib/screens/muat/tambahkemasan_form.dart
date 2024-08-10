@@ -1,12 +1,25 @@
+import 'dart:ffi';
+
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_beep/flutter_beep.dart';
 
 import 'package:get/get.dart';
 import 'package:odoo_rpc/odoo_rpc.dart';
+import 'package:tbl_fotobarang/main.dart';
 import 'package:tbl_fotobarang/screens/input_field.dart';
 import 'package:tbl_fotobarang/style.dart';
 import 'package:tbl_fotobarang/themes.dart';
 
 class TambahKemasanForm extends StatefulWidget {
+  final int vnokms;
+
+  const TambahKemasanForm(
+    {
+    super.key,
+    required this.vnokms
+    });
+
   @override
   _TambahKemasanForm createState() => _TambahKemasanForm();
 }
@@ -16,6 +29,10 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
   double _dialogWidth = Get.width;
   final tNoKemasan = TextEditingController(); 
   String? snokms;
+  dynamic vkode, vreskode;
+  dynamic nresp, vresp;
+  dynamic listKemasan;
+
   final client = OdooClient('https://tps.transbenua.com');
 
   @override
@@ -63,7 +80,7 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
             height: 10,
           ),
           InputField(
-            title: 'Nomor Polisi',
+            title: 'Nomor Kemasan',
             isSecured: false,
             tCont: tNoKemasan,
           ),
@@ -98,7 +115,7 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
                     setState(() {
                       _dialogHeight = 0;
                       snokms = tNoKemasan.text;
-                      insertMuatIds();
+                      inputKemasan();
                     });
                   });
                   await Future.delayed(const Duration(milliseconds: 450));
@@ -117,30 +134,75 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
       )),
     );
   }
-
-  Future<int?> sendMuat() async {
-    int? ret;
-    final session = await client.authenticate('tbl_test', 'tbl', 'tbl');
-    await client.callKw({
-      'model': 'dps.muat',
-      'method': 'create',
-      'args': [
-        {
-          'nopol': snokms,
-          'driver': sdriver,
-          'tujuan_muat': stujuan ?? '',
-        },
-      ],
-      'kwargs': {},
+Future<dynamic> fetchKemasan() async {
+    await orpc.callKw({
+      'model': 'dps.kemasan',
+      'method': 'search_read',
+      'args': [],
+      'kwargs': {
+        'context': {'bin_size': true},
+        'domain': [
+          ['name', '=', vkode]
+        ],
+        'fields': ['id', 'name', 'no_sppb'],
+        'limit': 1,
+      },
     }).then((value) {
       if (value != null) {
-        ret = value;
+        setState(() {
+          listKemasan = value;
+        });
+      } else {
+        setState(() {
+          listKemasan = "0";
+        });
       }
     });
-    //debugPrint('periksaId awal : ${periksaId}');
-
-    return ret;
+    return listKemasan;
   }
+
+Future inputKemasan() async {
+      vkode = snokms;
+      //print(vkode);
+      vreskode = await fetchKemasan();
+      //print(listcn[0]['end_respon']);
+      if (vreskode.length > 0) {
+        vresp = vreskode[0]['no_sppb'] ?? "X";
+      } else {
+        vresp = "N";
+      }
+
+      if (vresp == "N") {
+        FlutterBeep.beep(false);
+        // ignore: use_build_context_synchronously
+        CoolAlert.show(
+            context: context,
+            type: CoolAlertType.error,
+            title: "Tidak ditemukan!",
+            text: "Data kemasan tidak ditemukan di aplikasi",
+            autoCloseDuration: const Duration(seconds: 2));
+      } else if (vresp == "X") {
+        FlutterBeep.beep(false);
+        // ignore: use_build_context_synchronously
+        CoolAlert.show(
+            context: context,
+            type: CoolAlertType.error,
+            title: "Belum Dapat Dimuat!",
+            text: "Kemasan belum mendapatkan SPPB",
+            autoCloseDuration: const Duration(seconds: 2));
+      } else {
+        await insertMuatIds();
+        FlutterBeep.beep();
+        // ignore: use_build_context_synchronously
+        CoolAlert.show(
+            context: context,
+            type: CoolAlertType.error,
+            title: "Berhasil!",
+            text: "Data Muat Kemasan Tersimpan",
+            autoCloseDuration: const Duration(seconds: 2));
+        //setState(() {});
+      }
+    }
 
     Future insertMuatIds() async {
     var kemasanId = await orpc.callKw({

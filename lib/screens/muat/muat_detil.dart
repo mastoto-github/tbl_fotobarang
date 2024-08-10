@@ -92,7 +92,7 @@ class _MuatDetilState extends State<MuatDetil> {
                           style: TextButton.styleFrom(
                               backgroundColor: Colors.green.shade500),
                           onPressed: () async {
-                            _showAnimatedDialog(context, TambahKemasanForm());
+                            _showAnimatedDialog(context, TambahKemasanForm(vnokms: widget.vmuatid ));
                           },
                           child: const Text(
                             "Tambah Kemasan (Manual)",
