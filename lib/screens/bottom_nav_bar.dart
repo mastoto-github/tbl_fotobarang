@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:odoo_rpc/odoo_rpc.dart';
 import 'package:tbl_fotobarang/screens/check/check.dart';
 import 'package:tbl_fotobarang/screens/home/home.dart';
 import 'package:tbl_fotobarang/screens/muat/muat.dart';

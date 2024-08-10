@@ -4,11 +4,13 @@ import 'package:odoo_rpc/odoo_rpc.dart';
 // import 'package:tbl_fotobarang/pages/myhomepage2.dart';
 import 'package:tbl_fotobarang/screens/bottom_nav_bar.dart';
 import 'package:tbl_fotobarang/themes.dart';
+
 // import 'package:tbl_fotobarang/pages/myhomepage.dart';
+final orpc = OdooClient("https://tps.transbenua.com");
 
 void main() async {
-  final orpc = OdooClient("https://tps.transbenua.com");
-  final session = await orpc.authenticate('transbenua', 'tbl', 'tbl');
+  await orpc.authenticate('tbl_test', 'tbl', 'tbl');
+  //final session = await orpc.authenticate('transbenua', 'tbl', 'tbl');
 
   runApp(const MyApp());
 }

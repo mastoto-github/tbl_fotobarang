@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:tbl_fotobarang/main.dart';
 import 'package:tbl_fotobarang/screens/muat/muat_detil.dart';
 import 'package:tbl_fotobarang/screens/muat/signin_form.dart';
 import 'package:tbl_fotobarang/themes.dart';
@@ -15,7 +16,7 @@ class MuatPage extends StatefulWidget {
 
 class _MuatPageState extends State<MuatPage> {
   @override
-  final orpc = OdooClient("https://tps.transbenua.com");
+  //final orpc = OdooClient("https://tps.transbenua.com");
 
   dynamic listmuat;
   dynamic dnopol;
@@ -195,7 +196,7 @@ class _MuatPageState extends State<MuatPage> {
                 vjmlbrg: amount,
                 vmuatid: idmuat),
           ),
-        );
+        ).then((value) => setState(() {}));
       },
       child: Container(
         margin: const EdgeInsets.only(
@@ -296,7 +297,7 @@ class _MuatPageState extends State<MuatPage> {
   }
 
   Future<dynamic> getmuat() async {
-    final session = await orpc.authenticate('tbl_test', 'tbl', 'tbl');
+    //final session = await orpc.authenticate('tbl_test', 'tbl', 'tbl');
     return await orpc.callKw({
       'model': 'dps.muat',
       'method': 'search_read',
