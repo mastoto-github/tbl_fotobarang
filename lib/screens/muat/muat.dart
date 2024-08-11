@@ -93,7 +93,7 @@ class _MuatPageState extends State<MuatPage> {
                             snapshot.data[0]['driver'],
                             0.3,
                             snapshot.data[0]['jml_kemasan'],
-                            '31 Juli 2024 12:00',
+                            '-',
                             jmldata.toString()),
                         _portfolioCardList(
                             jmldata > 1 ? snapshot.data[1]['id'] : 0,
@@ -102,8 +102,8 @@ class _MuatPageState extends State<MuatPage> {
                             jmldata > 1 ? snapshot.data[1]['driver'] : '--',
                             0.3,
                             jmldata > 1 ? snapshot.data[1]['jml_kemasan'] : 0,
-                            '31 Juli 2024 12:00',
-                            '31 Juli 2024 15:00'),
+                            '-',
+                            jmldata.toString()),
                         _portfolioCardList(
                             jmldata > 2 ? snapshot.data[2]['id'] : 0,
                             'assets/icons/muat-kemasan.png',
@@ -111,8 +111,8 @@ class _MuatPageState extends State<MuatPage> {
                             jmldata > 2 ? snapshot.data[2]['driver'] : '--',
                             0.3,
                             jmldata > 2 ? snapshot.data[2]['jml_kemasan'] : 0,
-                            '31 Juli 2024 12:00',
-                            '31 Juli 2024 15:00'),
+                            '-',
+                            '-'),
                         _portfolioCardList(
                             jmldata > 3 ? snapshot.data[3]['id'] : 0,
                             'assets/icons/muat-kemasan.png',
@@ -120,8 +120,8 @@ class _MuatPageState extends State<MuatPage> {
                             jmldata > 3 ? snapshot.data[3]['driver'] : '--',
                             0.3,
                             jmldata > 3 ? snapshot.data[3]['jml_kemasan'] : 0,
-                            '31 Juli 2024 12:00',
-                            '31 Juli 2024 15:00'),
+                            '-',
+                            '-'),
                       ],
                     ),
                   );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:odoo_rpc/odoo_rpc.dart';
+import 'package:tbl_fotobarang/main.dart';
 import 'package:tbl_fotobarang/screens/input_field.dart';
 import 'package:tbl_fotobarang/style.dart';
 import 'package:tbl_fotobarang/themes.dart';
@@ -18,7 +19,7 @@ class _SigninForm extends State<SigninForm> {
   final tContDriver = TextEditingController();
   final tContTujuan = TextEditingController();
   String? snopol, sdriver, stujuan;
-  final client = OdooClient('https://tps.transbenua.com');
+  //final client = OdooClient('https://tps.transbenua.com');
 
   @override
   void initState() {
@@ -134,8 +135,8 @@ class _SigninForm extends State<SigninForm> {
 
   Future<int?> sendMuat() async {
     int? ret;
-    final session = await client.authenticate('tbl_test', 'tbl', 'tbl');
-    await client.callKw({
+    //final session = await client.authenticate('tbl_test', 'tbl', 'tbl');
+    await orpc.callKw({
       'model': 'dps.muat',
       'method': 'create',
       'args': [
