@@ -14,11 +14,7 @@ import 'package:tbl_fotobarang/themes.dart';
 class TambahKemasanForm extends StatefulWidget {
   final int vnokms;
 
-  const TambahKemasanForm(
-    {
-    super.key,
-    required this.vnokms
-    });
+  const TambahKemasanForm({super.key, required this.vnokms});
 
   @override
   _TambahKemasanForm createState() => _TambahKemasanForm();
@@ -27,7 +23,7 @@ class TambahKemasanForm extends StatefulWidget {
 class _TambahKemasanForm extends State<TambahKemasanForm> {
   double _dialogHeight = 0.0;
   double _dialogWidth = Get.width;
-  final tNoKemasan = TextEditingController(); 
+  final tNoKemasan = TextEditingController();
   String? snokms;
   dynamic vkode, vreskode;
   dynamic nresp, vresp;
@@ -40,7 +36,7 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
     super.initState();
     Future.delayed(Duration(milliseconds: 50), () {
       setState(() {
-        _dialogHeight = Get.height / 2.7;
+        _dialogHeight = Get.height / 4.6;
       });
     });
   }
@@ -134,7 +130,8 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
       )),
     );
   }
-Future<dynamic> fetchKemasan() async {
+
+  Future<dynamic> fetchKemasan() async {
     await orpc.callKw({
       'model': 'dps.kemasan',
       'method': 'search_read',
@@ -161,55 +158,55 @@ Future<dynamic> fetchKemasan() async {
     return listKemasan;
   }
 
-Future inputKemasan() async {
-      vkode = snokms;
-      //print(vkode);
-      vreskode = await fetchKemasan();
-      //print(listcn[0]['end_respon']);
-      if (vreskode.length > 0) {
-        vresp = vreskode[0]['no_sppb'] ?? "X";
-      } else {
-        vresp = "N";
-      }
-
-      if (vresp == "N") {
-        FlutterBeep.beep(false);
-        // ignore: use_build_context_synchronously
-        CoolAlert.show(
-            context: context,
-            type: CoolAlertType.error,
-            title: "Tidak ditemukan!",
-            text: "Data kemasan tidak ditemukan di aplikasi",
-            autoCloseDuration: const Duration(seconds: 2));
-      } else if (vresp == "X") {
-        FlutterBeep.beep(false);
-        // ignore: use_build_context_synchronously
-        CoolAlert.show(
-            context: context,
-            type: CoolAlertType.error,
-            title: "Belum Dapat Dimuat!",
-            text: "Kemasan belum mendapatkan SPPB",
-            autoCloseDuration: const Duration(seconds: 2));
-      } else {
-        await insertMuatIds();
-        FlutterBeep.beep();
-        // ignore: use_build_context_synchronously
-        CoolAlert.show(
-            context: context,
-            type: CoolAlertType.error,
-            title: "Berhasil!",
-            text: "Data Muat Kemasan Tersimpan",
-            autoCloseDuration: const Duration(seconds: 2));
-        //setState(() {});
-      }
+  Future inputKemasan() async {
+    vkode = snokms;
+    //print(vkode);
+    vreskode = await fetchKemasan();
+    //print(listcn[0]['end_respon']);
+    if (vreskode.length > 0) {
+      vresp = vreskode[0]['no_sppb'] ?? "X";
+    } else {
+      vresp = "N";
     }
 
-    Future insertMuatIds() async {
+    if (vresp == "N") {
+      FlutterBeep.beep(false);
+      // ignore: use_build_context_synchronously
+      CoolAlert.show(
+          context: context,
+          type: CoolAlertType.error,
+          title: "Tidak ditemukan!",
+          text: "Data kemasan tidak ditemukan di aplikasi",
+          autoCloseDuration: const Duration(seconds: 2));
+    } else if (vresp == "X") {
+      FlutterBeep.beep(false);
+      // ignore: use_build_context_synchronously
+      CoolAlert.show(
+          context: context,
+          type: CoolAlertType.error,
+          title: "Belum Dapat Dimuat!",
+          text: "Kemasan belum mendapatkan SPPB",
+          autoCloseDuration: const Duration(seconds: 2));
+    } else {
+      await insertMuatIds();
+      FlutterBeep.beep();
+      // ignore: use_build_context_synchronously
+      CoolAlert.show(
+          context: context,
+          type: CoolAlertType.error,
+          title: "Berhasil!",
+          text: "Data Muat Kemasan Tersimpan",
+          autoCloseDuration: const Duration(seconds: 2));
+      //setState(() {});
+    }
+  }
+
+  Future insertMuatIds() async {
     var kemasanId = await orpc.callKw({
       'model': 'dps.muat.ids',
       'method': 'create',
       'args': [
-        {'muat_id': widget.vmuatid, 'kemasan_id': vreskode[0]['id']},
+        {'muat_id': widget.vnokms, 'kemasan_id': vreskode[0]['id']},
       ],
       'kwargs': {},
     });
