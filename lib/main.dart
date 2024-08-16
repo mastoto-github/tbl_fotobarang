@@ -9,7 +9,7 @@ import 'package:tbl_fotobarang/themes.dart';
 final orpc = OdooClient("https://tps.transbenua.com");
 
 void main() async {
-  await orpc.authenticate('tbl_test', 'tbl', 'tbl');
+  await orpc.authenticate('transbenua', 'tbl', 'tbl');
   //final session = await orpc.authenticate('transbenua', 'tbl', 'tbl');
 
   runApp(const MyApp());

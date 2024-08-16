@@ -108,11 +108,13 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
               ElevatedButton(
                 onPressed: () async {
                   await Future.delayed(const Duration(milliseconds: 50), () {
-                    setState(() {
-                      _dialogHeight = 0;
-                      snokms = tNoKemasan.text;
-                      inputKemasan();
-                    });
+                    if (mounted) {
+                      setState(() {
+                        _dialogHeight = 0;
+                        snokms = tNoKemasan.text;
+                      });
+                    }
+                    inputKemasan();
                   });
                   await Future.delayed(const Duration(milliseconds: 450));
                   Get.back(result: 'Ok');
@@ -145,14 +147,16 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
         'limit': 1,
       },
     }).then((value) {
-      if (value != null) {
-        setState(() {
-          listKemasan = value;
-        });
-      } else {
-        setState(() {
-          listKemasan = "0";
-        });
+      if (mounted) {
+        if (value != null) {
+          setState(() {
+            listKemasan = value;
+          });
+        } else {
+          setState(() {
+            listKemasan = "0";
+          });
+        }
       }
     });
     return listKemasan;
@@ -172,12 +176,12 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
     if (vresp == "N") {
       FlutterBeep.beep(false);
       // ignore: use_build_context_synchronously
-      CoolAlert.show(
-          context: context,
-          type: CoolAlertType.error,
-          title: "Tidak ditemukan!",
-          text: "Data kemasan tidak ditemukan di aplikasi",
-          autoCloseDuration: const Duration(seconds: 2));
+      // CoolAlert.show(
+      //     context: context,
+      //     type: CoolAlertType.error,
+      //     title: "Tidak ditemukan!",
+      //     text: "Data kemasan tidak ditemukan di aplikasi",
+      //     autoCloseDuration: const Duration(seconds: 2));
     } else if (vresp == "X") {
       FlutterBeep.beep(false);
       // ignore: use_build_context_synchronously

@@ -83,16 +83,46 @@ class _MuatPageState extends State<MuatPage> {
                   );
                 } else if (snapshot.hasData) {
                   int jmldata = snapshot.data!.length;
-                  return Expanded(
-                    child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: jmldata,
-                      itemBuilder: (context, index) {
-                        final muatdata =
-                            snapshot.data[index] as Map<String, dynamic>;
-                        return portfolioCardList(muatdata);
-                      },
+                  return Container(
+                    child: Column(
+                      children: [
+                        _portfolioCardList(
+                            jmldata > 0 ? snapshot.data[0]['id'] : 0,
+                            'assets/icons/muat-kemasan.png',
+                            jmldata > 0 ? snapshot.data[0]['nopol'] : '--',
+                            jmldata > 0 ? snapshot.data[0]['driver'] : '--',
+                            0.3,
+                            jmldata > 0 ? snapshot.data[0]['jml_kemasan'] : 0,
+                            '-',
+                            jmldata.toString()),
+                        _portfolioCardList(
+                            jmldata > 1 ? snapshot.data[1]['id'] : 0,
+                            'assets/icons/muat-kemasan.png',
+                            jmldata > 1 ? snapshot.data[1]['nopol'] : '--',
+                            jmldata > 1 ? snapshot.data[1]['driver'] : '--',
+                            0.3,
+                            jmldata > 1 ? snapshot.data[1]['jml_kemasan'] : 0,
+                            '-',
+                            jmldata.toString()),
+                        _portfolioCardList(
+                            jmldata > 2 ? snapshot.data[2]['id'] : 0,
+                            'assets/icons/muat-kemasan.png',
+                            jmldata > 2 ? snapshot.data[2]['nopol'] : '--',
+                            jmldata > 2 ? snapshot.data[2]['driver'] : '--',
+                            0.3,
+                            jmldata > 2 ? snapshot.data[2]['jml_kemasan'] : 0,
+                            '-',
+                            '-'),
+                        _portfolioCardList(
+                            jmldata > 3 ? snapshot.data[3]['id'] : 0,
+                            'assets/icons/muat-kemasan.png',
+                            jmldata > 3 ? snapshot.data[3]['nopol'] : '--',
+                            jmldata > 3 ? snapshot.data[3]['driver'] : '--',
+                            0.3,
+                            jmldata > 3 ? snapshot.data[3]['jml_kemasan'] : 0,
+                            '-',
+                            '-'),
+                      ],
                     ),
                   );
                 } else {
@@ -145,17 +175,26 @@ class _MuatPageState extends State<MuatPage> {
     );
   }
 
-  Widget portfolioCardList(Map<String, dynamic> muatdata) {
+  Widget _portfolioCardList(
+    int idmuat,
+    String icon,
+    String title,
+    String driver,
+    double percent,
+    int amount,
+    String timein,
+    String timeout,
+  ) {
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => MuatDetil(
-                vnopol: muatdata['nopol'].toString(),
-                vdriver: muatdata['driver'].toString(),
-                vjmlbrg: muatdata['jml_kemasan'],
-                vmuatid: muatdata['id']),
+                vnopol: title,
+                vdriver: driver,
+                vjmlbrg: amount,
+                vmuatid: idmuat),
           ),
         ).then((value) => setState(() {}));
       },
@@ -182,78 +221,76 @@ class _MuatPageState extends State<MuatPage> {
             )
           ],
         ),
-        child: Expanded(
-          child: Row(
-            children: [
-              SizedBox(
-                height: 55,
-                width: 55,
-                child: CircleAvatar(
-                  backgroundColor: kTropicalBlue,
-                  child: Image.asset(
-                    'assets/icons/muat-kemasan.png',
-                    width: 24,
+        child: Row(
+          children: [
+            SizedBox(
+              height: 55,
+              width: 55,
+              child: CircleAvatar(
+                backgroundColor: kTropicalBlue,
+                child: Image.asset(
+                  icon,
+                  width: 24,
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 15,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        title,
+                        style: kSubtitle1,
+                      ),
+                      const Spacer(),
+                      Text(
+                        driver,
+                        style: kSubtitle2,
+                        textAlign: TextAlign.right,
+                      ),
+                    ],
                   ),
-                ),
-              ),
-              const SizedBox(
-                width: 15,
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          muatdata['nopol'].toString(),
-                          style: kSubtitle1,
-                        ),
-                        const Spacer(),
-                        Text(
-                          muatdata['driver'].toString(),
-                          style: kSubtitle2,
-                          textAlign: TextAlign.right,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    LinearPercentIndicator(
-                      lineHeight: 4,
-                      padding: const EdgeInsets.symmetric(horizontal: 0),
-                      percent: 1,
-                      progressColor: kBlueRibbon,
-                      backgroundColor: kGrey.withOpacity(0.3),
-                    ),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: Text(
-                        "Barang Termuat : ${muatdata['jml_kemasan']}",
-                        style: kBody2.copyWith(
-                          color: kGrey,
-                        ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  LinearPercentIndicator(
+                    lineHeight: 4,
+                    padding: const EdgeInsets.symmetric(horizontal: 0),
+                    percent: percent,
+                    progressColor: kBlueRibbon,
+                    backgroundColor: kGrey.withOpacity(0.3),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      "Barang Termuat : $amount",
+                      style: kBody2.copyWith(
+                        color: kGrey,
                       ),
                     ),
-                    const Spacer(),
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Text(
-                        '---',
-                        style: kCaption.copyWith(
-                          color: kLightGray,
-                        ),
+                  ),
+                  const Spacer(),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Text(
+                      timeout,
+                      style: kCaption.copyWith(
+                        color: kLightGray,
                       ),
-                    )
-                  ],
-                ),
-              )
-            ],
-          ),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -269,7 +306,7 @@ class _MuatPageState extends State<MuatPage> {
         'context': {'bin_size': true},
         'domain': [],
         'fields': ['id', 'name', 'nopol', 'driver', 'state', 'jml_kemasan'],
-        'limit': 5,
+        'limit': 4,
         'order': 'id desc'
       },
       //}).then((value) {
