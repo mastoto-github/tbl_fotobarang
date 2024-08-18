@@ -92,7 +92,8 @@ class _MuatDetilState extends State<MuatDetil> {
                           style: TextButton.styleFrom(
                               backgroundColor: Colors.green.shade500),
                           onPressed: () async {
-                            _showAnimatedDialog(context, TambahKemasanForm(vnokms: widget.vmuatid ));
+                            _showAnimatedDialog(context,
+                                TambahKemasanForm(vnokms: widget.vmuatid));
                           },
                           child: const Text(
                             "Tambah Kemasan (Manual)",
@@ -138,13 +139,18 @@ class _MuatDetilState extends State<MuatDetil> {
 
   Widget buildListDetil(Map<String, dynamic> record) {
     final spt = record['kemasan_id'].toString();
+    final gatein = record['waktu_gatein'].toString();
     List<String> pisah = spt.split(", ");
     String nokms = pisah[1].replaceAll("]", "");
     //nokms = nokms.replaceAll(" ", "");
     return ListTile(
-      leading: Text(record['id'].toString()),
-      title: Text(nokms + ' No SPPB : ' + record['no_sppb'].toString()),
-      subtitle: Text(record['nama_penerima'].toString()),
+      leading: Image.asset(
+        'assets/icons/kemasan.png',
+        width: 19,
+      ),
+      title: Text('$nokms -- No SPPB : ${record['no_sppb']}'),
+      subtitle: Text(
+          "${record['nama_penerima']} -- Gate In : ${record['waktu_gatein']}"),
     );
   }
 
@@ -160,7 +166,13 @@ class _MuatDetilState extends State<MuatDetil> {
         'domain': [
           ['muat_id', '=', widget.vmuatid]
         ],
-        'fields': ['id', 'kemasan_id', 'no_sppb', 'nama_penerima'],
+        'fields': [
+          'id',
+          'kemasan_id',
+          'no_sppb',
+          'nama_penerima',
+          'waktu_gatein'
+        ],
         'limit': 400,
       },
     });
@@ -177,7 +189,7 @@ class _MuatDetilState extends State<MuatDetil> {
         'domain': [
           ['name', '=', vkode]
         ],
-        'fields': ['id', 'name', 'no_sppb'],
+        'fields': ['id', 'name', 'no_sppb', 'waktu_gatein'],
         'limit': 1,
       },
     }).then((value) {
@@ -240,8 +252,8 @@ class _MuatDetilState extends State<MuatDetil> {
             type: CoolAlertType.error,
             title: "Tidak ditemukan!",
             text: "Data kemasan tidak ditemukan di aplikasi",
-            autoCloseDuration: const Duration(seconds: 2));
-      } else if (vresp == "X") {
+            autoCloseDuration: const Duration(seconds: 4));
+      } else if (vresp == "X" || vresp == "false") {
         FlutterBeep.beep(false);
         // ignore: use_build_context_synchronously
         CoolAlert.show(
@@ -256,7 +268,7 @@ class _MuatDetilState extends State<MuatDetil> {
         // ignore: use_build_context_synchronously
         CoolAlert.show(
             context: context,
-            type: CoolAlertType.error,
+            type: CoolAlertType.success,
             title: "Berhasil!",
             text: "Data Muat Kemasan Tersimpan",
             autoCloseDuration: const Duration(seconds: 2));

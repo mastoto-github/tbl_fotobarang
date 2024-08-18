@@ -55,7 +55,7 @@ class _MuatPageState extends State<MuatPage> {
               child: Column(
                 children: [
                   Text(
-                    'Muat Barang',
+                    'Muat Kemasan',
                     style: kHeading6.copyWith(
                       color: kWhite,
                       fontWeight: FontWeight.w600,

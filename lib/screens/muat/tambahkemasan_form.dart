@@ -168,7 +168,11 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
     vreskode = await fetchKemasan();
     //print(listcn[0]['end_respon']);
     if (vreskode.length > 0) {
-      vresp = vreskode[0]['no_sppb'] ?? "X";
+      if (vreskode[0]['no_sppb'] == false) {
+        vresp = "X";
+      } else {
+        vresp = vreskode[0]['no_sppb'];
+      }
     } else {
       vresp = "N";
     }
@@ -187,7 +191,7 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
       // ignore: use_build_context_synchronously
       CoolAlert.show(
           context: context,
-          type: CoolAlertType.error,
+          type: CoolAlertType.success,
           title: "Belum Dapat Dimuat!",
           text: "Kemasan belum mendapatkan SPPB",
           autoCloseDuration: const Duration(seconds: 2));
