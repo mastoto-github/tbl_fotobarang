@@ -116,8 +116,8 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
                     }
                     inputKemasan();
                   });
-                  await Future.delayed(const Duration(milliseconds: 450));
-                  Get.back(result: 'Ok');
+                  //await Future.delayed(const Duration(milliseconds: 450));
+                  //Get.back(result: 'Ok');
                 },
                 style: style.btnStyle(
                     btnWidth: Get.width / 3, btnColor: blueColor),
@@ -143,7 +143,7 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
         'domain': [
           ['name', '=', vkode]
         ],
-        'fields': ['id', 'name', 'no_sppb'],
+        'fields': ['id', 'name', 'no_sppb', 'hasil_periksa'],
         'limit': 1,
       },
     }).then((value) {
@@ -163,6 +163,7 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
   }
 
   Future inputKemasan() async {
+    String vhsl;
     vkode = snokms;
     //print(vkode);
     vreskode = await fetchKemasan();
@@ -179,13 +180,6 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
 
     if (vresp == "N") {
       FlutterBeep.beep(false);
-      // ignore: use_build_context_synchronously
-      // CoolAlert.show(
-      //     context: context,
-      //     type: CoolAlertType.error,
-      //     title: "Tidak ditemukan!",
-      //     text: "Data kemasan tidak ditemukan di aplikasi",
-      //     autoCloseDuration: const Duration(seconds: 2));
     } else if (vresp == "X") {
       FlutterBeep.beep(false);
       // ignore: use_build_context_synchronously
@@ -196,16 +190,32 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
           text: "Kemasan belum mendapatkan SPPB",
           autoCloseDuration: const Duration(seconds: 2));
     } else {
-      await insertMuatIds();
-      FlutterBeep.beep();
-      // ignore: use_build_context_synchronously
-      CoolAlert.show(
+      vhsl = vreskode[0]['hasil_periksa'];
+      if (vhsl.substring(0, 2) == "p2") {
+        vhsl = vhsl.toUpperCase();
+        FlutterBeep.beep();
+        // ignore: use_build_context_synchronously
+        CoolAlert.show(
           context: context,
-          type: CoolAlertType.error,
-          title: "Berhasil!",
-          text: "Data Muat Kemasan Tersimpan",
-          autoCloseDuration: const Duration(seconds: 2));
-      //setState(() {});
+          type: CoolAlertType.confirm,
+          title: "Hasil Periksa $vhsl !",
+          text: " Lanjut Muat ?",
+          confirmBtnText: "Ya",
+          cancelBtnText: "Tidak",
+          confirmBtnColor: Colors.green,
+          onConfirmBtnTap: () async {
+            await insertMuatIds();
+          },
+        );
+      }
+
+      // ignore: use_build_context_synchronously
+      // CoolAlert.show(
+      //     context: context,
+      //     type: CoolAlertType.error,
+      //     title: "Berhasil!",
+      //     text: "Data Muat Kemasan Tersimpan",
+      //     autoCloseDuration: const Duration(seconds: 2));
     }
   }
 

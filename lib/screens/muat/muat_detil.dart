@@ -189,7 +189,7 @@ class _MuatDetilState extends State<MuatDetil> {
         'domain': [
           ['name', '=', vkode]
         ],
-        'fields': ['id', 'name', 'no_sppb', 'waktu_gatein'],
+        'fields': ['id', 'name', 'no_sppb', 'waktu_gatein', 'hasil_periksa'],
         'limit': 1,
       },
     }).then((value) {
@@ -243,7 +243,7 @@ class _MuatDetilState extends State<MuatDetil> {
       } else {
         vresp = "N";
       }
-
+      String vhsl;
       if (vresp == "N") {
         FlutterBeep.beep(false);
         // ignore: use_build_context_synchronously
@@ -263,16 +263,24 @@ class _MuatDetilState extends State<MuatDetil> {
             text: "Kemasan belum mendapatkan SPPB",
             autoCloseDuration: const Duration(seconds: 2));
       } else {
-        await insertMuatIds();
-        FlutterBeep.beep();
-        // ignore: use_build_context_synchronously
-        CoolAlert.show(
-            context: context,
-            type: CoolAlertType.success,
-            title: "Berhasil!",
-            text: "Data Muat Kemasan Tersimpan",
-            autoCloseDuration: const Duration(seconds: 2));
-        //setState(() {});
+        vhsl = vreskode[0]['hasil_periksa'];
+        if (vhsl.substring(0, 2) == "p2") {
+          vhsl = vhsl.toUpperCase();
+          FlutterBeep.beep();
+          // ignore: use_build_context_synchronously
+          CoolAlert.show(
+              context: context,
+              type: CoolAlertType.confirm,
+              text: "Hasil Periksa $vhsl ! Lanjut Muat ?",
+              confirmBtnText: "Ya",
+              cancelBtnText: "Tidak",
+              confirmBtnColor: Colors.green,
+              onConfirmBtnTap: () async {
+                await insertMuatIds();
+                FlutterBeep.beep();
+                // ignore: use_build_context_synchronously
+              });
+        }
       }
       //nresp = vresp?[0];
       // if (nresp == "4") {
