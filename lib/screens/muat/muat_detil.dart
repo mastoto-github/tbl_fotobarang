@@ -174,6 +174,7 @@ class _MuatDetilState extends State<MuatDetil> {
           'waktu_gatein'
         ],
         'limit': 400,
+        'order': 'id desc',
       },
     });
     final int a = 1;
@@ -276,10 +277,46 @@ class _MuatDetilState extends State<MuatDetil> {
               cancelBtnText: "Tidak",
               confirmBtnColor: Colors.green,
               onConfirmBtnTap: () async {
-                await insertMuatIds();
-                FlutterBeep.beep();
+                try {
+                  await insertMuatIds();
+                  // ignore: use_build_context_synchronously
+                  CoolAlert.show(
+                      context: context,
+                      type: CoolAlertType.success,
+                      title: "Berhasil!",
+                      text: "Kemasan berhasil dimuat",
+                      autoCloseDuration: const Duration(seconds: 2));
+                } catch (e) {
+                  // ignore: use_build_context_synchronously
+                  CoolAlert.show(
+                      context: context,
+                      type: CoolAlertType.error,
+                      title: "Gagal!",
+                      text: "Kemasan sudah pernah dimuat",
+                      autoCloseDuration: const Duration(seconds: 2));
+                }
                 // ignore: use_build_context_synchronously
               });
+        } else {
+          FlutterBeep.beep();
+          try {
+            await insertMuatIds();
+            // ignore: use_build_context_synchronously
+            CoolAlert.show(
+                context: context,
+                type: CoolAlertType.success,
+                title: "Berhasil!",
+                text: "Kemasan berhasil dimuat",
+                autoCloseDuration: const Duration(seconds: 2));
+          } catch (e) {
+            // ignore: use_build_context_synchronously
+            CoolAlert.show(
+                context: context,
+                type: CoolAlertType.error,
+                title: "Gagal!",
+                text: "Kemasan sudah pernah dimuat",
+                autoCloseDuration: const Duration(seconds: 2));
+          }
         }
       }
       //nresp = vresp?[0];

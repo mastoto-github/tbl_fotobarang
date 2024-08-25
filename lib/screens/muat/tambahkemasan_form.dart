@@ -111,7 +111,7 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
                     if (mounted) {
                       setState(() {
                         _dialogHeight = 0;
-                        snokms = tNoKemasan.text;
+                        snokms = tNoKemasan.text.toUpperCase();
                       });
                     }
                     inputKemasan();
@@ -185,7 +185,7 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
       // ignore: use_build_context_synchronously
       CoolAlert.show(
           context: context,
-          type: CoolAlertType.success,
+          type: CoolAlertType.error,
           title: "Belum Dapat Dimuat!",
           text: "Kemasan belum mendapatkan SPPB",
           autoCloseDuration: const Duration(seconds: 2));
@@ -204,9 +204,47 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
           cancelBtnText: "Tidak",
           confirmBtnColor: Colors.green,
           onConfirmBtnTap: () async {
-            await insertMuatIds();
+            try {
+              await insertMuatIds();
+              // ignore: use_build_context_synchronously
+              CoolAlert.show(
+                  context: context,
+                  type: CoolAlertType.success,
+                  title: "Berhasil!",
+                  text: "Kemasan berhasil dimuat",
+                  autoCloseDuration: const Duration(seconds: 2));
+            } catch (e) {
+              // ignore: use_build_context_synchronously
+              CoolAlert.show(
+                  context: context,
+                  type: CoolAlertType.error,
+                  title: "Gagal!",
+                  text: "Kemasan sudah pernah dimuat",
+                  autoCloseDuration: const Duration(seconds: 2));
+            }
           },
         );
+      } else {
+        FlutterBeep.beep();
+
+        try {
+          await insertMuatIds();
+          // ignore: use_build_context_synchronously
+          CoolAlert.show(
+              context: context,
+              type: CoolAlertType.success,
+              title: "Berhasil!",
+              text: "Kemasan berhasil dimuat",
+              autoCloseDuration: const Duration(seconds: 2));
+        } catch (e) {
+          // ignore: use_build_context_synchronously
+          CoolAlert.show(
+              context: context,
+              type: CoolAlertType.error,
+              title: "Gagal!",
+              text: "Kemasan sudah pernah dimuat",
+              autoCloseDuration: const Duration(seconds: 2));
+        }
       }
 
       // ignore: use_build_context_synchronously

@@ -18,7 +18,7 @@ class _CheckPageState extends State<CheckPage> {
   dynamic nresp, vresp;
   dynamic listKemasan;
   dynamic vsppb;
-  String vnocn = "", vnokms = "", vhperiksa = "", vstakhir = "";
+  String vnocn = "", vnokms = "", vhperiksa = "", vstakhir = "", vgatein = "";
   final tNoKemasan = TextEditingController();
 
   @override
@@ -274,23 +274,51 @@ class _CheckPageState extends State<CheckPage> {
                         height: 12,
                       ),
                       //const Spacer(),
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          "No SPPB :",
-                          style: kBody1.copyWith(
-                            color: kGrey,
+                      Row(
+                        children: [
+                          Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              "No SPPB :",
+                              style: kBody1.copyWith(
+                                color: kGrey,
+                              ),
+                            ),
                           ),
-                        ),
+                          const Spacer(),
+                          Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              "Gate In :",
+                              style: kBody1.copyWith(
+                                color: kGrey,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          vsppb ?? "--",
-                          style: kBody1.copyWith(
-                            color: kGrey,
+                      Row(
+                        children: [
+                          Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              vsppb ?? "--",
+                              style: kBody1.copyWith(
+                                color: kGrey,
+                              ),
+                            ),
                           ),
-                        ),
+                          const Spacer(),
+                          Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              vgatein ?? "--",
+                              style: kBody1.copyWith(
+                                color: kGrey,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -315,15 +343,21 @@ class _CheckPageState extends State<CheckPage> {
       if (vreskode.length > 0) {
         vnocn = vreskode[0]['cn'];
         vnokms = vreskode[0]['name'];
-        vsppb = vreskode[0]['no_sppb'];
+        if (vsppb is String) {
+          vsppb = vsppb;
+        } else {
+          vsppb = "--";
+        }
         vhperiksa = vreskode[0]['hasil_periksa'];
         vstakhir = vreskode[0]['status_akhir'];
+        vgatein = vreskode[0]['waktu_gatein'];
       } else {
         vnocn = "--";
         vnokms = "--";
         vsppb = "Kemasan td ditemukan";
         vhperiksa = "Kemasan td ditemukan";
         vstakhir = "Kemasan td ditemukan";
+        vgatein = "Kemasan tdk ditemukan";
       }
     });
   }
@@ -341,6 +375,7 @@ class _CheckPageState extends State<CheckPage> {
       vnocn = vreskode[0]['cn'];
       vnokms = vreskode[0]['name'];
       vsppb = vreskode[0]['no_sppb'];
+      vgatein = vreskode[0]['waktu_gatein'];
       if (vsppb is String) {
         vsppb = vsppb;
       } else {
@@ -351,9 +386,10 @@ class _CheckPageState extends State<CheckPage> {
     } else {
       vnocn = "--";
       vnokms = "--";
-      vsppb = "Kemasan td ditemukan";
-      vhperiksa = "Kemasan td ditemukan";
-      vstakhir = "Kemasan td ditemukan";
+      vsppb = "Kemasan tdk ditemukan";
+      vhperiksa = "Kemasan tdk ditemukan";
+      vstakhir = "Kemasan tdk ditemukan";
+      vgatein = "Kemasan tdk ditemukan";
     } // } else {
     //   vresp = "N";
     // }
@@ -375,7 +411,8 @@ class _CheckPageState extends State<CheckPage> {
           'name',
           'no_sppb',
           'hasil_periksa',
-          'status_akhir'
+          'status_akhir',
+          'waktu_gatein'
         ],
         'limit': 1,
       },
