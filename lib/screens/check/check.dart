@@ -1,4 +1,6 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:tbl_fotobarang/main.dart';
@@ -18,8 +20,16 @@ class _CheckPageState extends State<CheckPage> {
   dynamic nresp, vresp;
   dynamic listKemasan;
   dynamic vsppb;
-  String vnocn = "", vnokms = "", vhperiksa = "", vstakhir = "", vgatein = "";
+  String vnocn = "",
+      vnokms = "",
+      vhperiksa = "",
+      vstakhir = "",
+      vgatein = "",
+      vhsl = "p2ph";
+  dynamic vcnid;
   final tNoKemasan = TextEditingController();
+  final List<String> _dropDownItems = ['p2ph', 'p2wh', 'p2pm', 'p2wm'];
+  String _selectedItem = 'p2ph';
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +173,7 @@ class _CheckPageState extends State<CheckPage> {
           ),
           padding: const EdgeInsets.fromLTRB(15, 19, 15, 14),
           constraints: const BoxConstraints.expand(
-            height: 250,
+            height: 310,
           ),
           decoration: BoxDecoration(
             color: kWhite,
@@ -229,27 +239,118 @@ class _CheckPageState extends State<CheckPage> {
                       const SizedBox(
                         height: 12,
                       ),
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          "Hasil Periksa :",
-                          style: kBody1.copyWith(
-                            color: kGrey,
+                      Row(
+                        children: [
+                          Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              "Hasil Periksa :",
+                              style: kBody1.copyWith(
+                                color: kGrey,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                       //const Spacer(),
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          vhperiksa ?? "--",
-                          style: kBody1.copyWith(
-                            color: kGrey,
+                      Row(
+                        children: [
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              vhperiksa ?? "--",
+                              style: kBody1.copyWith(
+                                color: kGrey,
+                              ),
+                            ),
                           ),
-                        ),
+                          const Spacer(),
+                          DropdownButton(
+                            value: _selectedItem,
+                            style: kBody1.copyWith(color: kGrey),
+                            items: _dropDownItems.map((String item) {
+                              return DropdownMenuItem(
+                                value: item,
+                                child: Text(item),
+                              );
+                            }).toList(),
+                            onChanged: (String? value) {
+                              setState(() {
+                                _selectedItem = value!;
+                                vhsl = _selectedItem;
+                              });
+                            },
+                            icon: const Icon(Icons.arrow_drop_down),
+                          ),
+                          Align(
+                            alignment: Alignment.bottomLeft,
+                            child: TextButton(
+                              onPressed: () async {
+                                CoolAlert.show(
+                                    context: context,
+                                    type: CoolAlertType.confirm,
+                                    text: "Ubah Hasil Periksa ?",
+                                    confirmBtnText: "Ya",
+                                    cancelBtnText: "Tidak",
+                                    confirmBtnColor: Colors.green,
+                                    onConfirmBtnTap: () async {
+                                      try {
+                                        await updateHasilPeriksa();
+                                        // ignore: use_build_context_synchronously
+                                        CoolAlert.show(
+                                            context: context,
+                                            type: CoolAlertType.success,
+                                            title: "Berhasil!",
+                                            text: "Hasil Periksa Diubah",
+                                            autoCloseDuration:
+                                                const Duration(seconds: 2));
+                                      } catch (e) {
+                                        // ignore: use_build_context_synchronously
+                                        CoolAlert.show(
+                                            context: context,
+                                            type: CoolAlertType.error,
+                                            title: "Gagal!",
+                                            text: "Gagal Merubah",
+                                            autoCloseDuration:
+                                                const Duration(seconds: 2));
+                                      }
+                                      // ignore: use_build_context_synchronously
+                                    });
+                              },
+                              style: TextButton.styleFrom(
+                                backgroundColor: kWhite,
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(15),
+                                  ),
+                                ),
+                                elevation: 4,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.add,
+                                    size: 13,
+                                    color: kLuckyBlue,
+                                  ),
+                                  Text(
+                                    'Ubah',
+                                    style: kButton2.copyWith(
+                                      color: kLuckyBlue,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(
-                        height: 12,
+                        height: 14,
                       ),
                       //const Spacer(),
                       Align(
@@ -336,12 +437,13 @@ class _CheckPageState extends State<CheckPage> {
             "#FFFF0000", "Kembali", false, ScanMode.BARCODE)
         .then((String kode) async {
       setState(() {
-        vkode = kode;
+        vkode = kode.toUpperCase();
       });
       //print(vkode);
       vreskode = await fetchKemasan();
       if (vreskode.length > 0) {
         vnocn = vreskode[0]['cn'];
+        vcnid = vreskode[0]['cn_id'][0];
         vnokms = vreskode[0]['name'];
         if (vsppb is String) {
           vsppb = vsppb;
@@ -364,7 +466,7 @@ class _CheckPageState extends State<CheckPage> {
 
   Future checkmanual() async {
     setState(() {
-      vkode = tNoKemasan.text;
+      vkode = tNoKemasan.text.toUpperCase();
     });
     //print(vkode);
     vreskode = await fetchKemasan();
@@ -373,6 +475,7 @@ class _CheckPageState extends State<CheckPage> {
     // if (vreskode.length > 0) {
     if (vreskode.length > 0) {
       vnocn = vreskode[0]['cn'];
+      vcnid = vreskode[0]['cn_id'][0];
       vnokms = vreskode[0]['name'];
       vsppb = vreskode[0]['no_sppb'];
       vgatein = vreskode[0]['waktu_gatein'];
@@ -407,6 +510,7 @@ class _CheckPageState extends State<CheckPage> {
         ],
         'fields': [
           'id',
+          'cn_id',
           'cn',
           'name',
           'no_sppb',
@@ -428,5 +532,17 @@ class _CheckPageState extends State<CheckPage> {
       }
     });
     return listKemasan;
+  }
+
+  Future updateHasilPeriksa() async {
+    var kemasanId = await orpc.callKw({
+      'model': 'dps.cn.pibk',
+      'method': 'write',
+      'args': [
+        vcnid,
+        {'hasil_periksa': vhsl},
+      ],
+      'kwargs': {},
+    });
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tbl_fotobarang/inputformat.dart';
 
 class InputField extends StatelessWidget {
   String title;
@@ -35,6 +36,7 @@ class InputField extends StatelessWidget {
                       border: InputBorder.none,
                       hintText: title,
                       hintStyle: TextStyle(color: Colors.grey)),
+                  inputFormatters: [UpperCaseTextFormatter()],
                 ),
               ),
             )

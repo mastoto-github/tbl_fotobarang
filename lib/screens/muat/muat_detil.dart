@@ -27,6 +27,7 @@ class _MuatDetilState extends State<MuatDetil> {
   dynamic vkode, vreskode;
   dynamic nresp, vresp;
   dynamic listKemasan;
+  String? snokms;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +55,7 @@ class _MuatDetilState extends State<MuatDetil> {
                 Align(
                   alignment: Alignment.center,
                   child: Text(
-                    'Driver : ' + widget.vdriver,
+                    'Driver : ${widget.vdriver}',
                     textAlign: TextAlign.center,
                     style: const TextStyle(color: Colors.white, fontSize: 18),
                   ),
@@ -83,7 +84,7 @@ class _MuatDetilState extends State<MuatDetil> {
                             style: TextStyle(fontSize: 12, color: Colors.white),
                           )),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Align(
@@ -230,31 +231,30 @@ class _MuatDetilState extends State<MuatDetil> {
   }
 
   Future scanbarcode() async {
+    String vhsl;
+    //vkode = snokms;
     await FlutterBarcodeScanner.scanBarcode(
             "#FFFF0000", "Kembali", false, ScanMode.BARCODE)
         .then((String kode) async {
       setState(() {
-        vkode = kode;
+        vkode = kode.toUpperCase();
       });
       //print(vkode);
       vreskode = await fetchKemasan();
       //print(listcn[0]['end_respon']);
       if (vreskode.length > 0) {
-        vresp = vreskode[0]['no_sppb'] ?? "X";
+        if (vreskode[0]['no_sppb'] == false) {
+          vresp = "X";
+        } else {
+          vresp = vreskode[0]['no_sppb'];
+        }
       } else {
         vresp = "N";
       }
-      String vhsl;
+
       if (vresp == "N") {
         FlutterBeep.beep(false);
-        // ignore: use_build_context_synchronously
-        CoolAlert.show(
-            context: context,
-            type: CoolAlertType.error,
-            title: "Tidak ditemukan!",
-            text: "Data kemasan tidak ditemukan di aplikasi",
-            autoCloseDuration: const Duration(seconds: 4));
-      } else if (vresp == "X" || vresp == "false") {
+      } else if (vresp == "X") {
         FlutterBeep.beep(false);
         // ignore: use_build_context_synchronously
         CoolAlert.show(
@@ -270,35 +270,37 @@ class _MuatDetilState extends State<MuatDetil> {
           FlutterBeep.beep();
           // ignore: use_build_context_synchronously
           CoolAlert.show(
-              context: context,
-              type: CoolAlertType.confirm,
-              text: "Hasil Periksa $vhsl ! Lanjut Muat ?",
-              confirmBtnText: "Ya",
-              cancelBtnText: "Tidak",
-              confirmBtnColor: Colors.green,
-              onConfirmBtnTap: () async {
-                try {
-                  await insertMuatIds();
-                  // ignore: use_build_context_synchronously
-                  CoolAlert.show(
-                      context: context,
-                      type: CoolAlertType.success,
-                      title: "Berhasil!",
-                      text: "Kemasan berhasil dimuat",
-                      autoCloseDuration: const Duration(seconds: 2));
-                } catch (e) {
-                  // ignore: use_build_context_synchronously
-                  CoolAlert.show(
-                      context: context,
-                      type: CoolAlertType.error,
-                      title: "Gagal!",
-                      text: "Kemasan sudah pernah dimuat",
-                      autoCloseDuration: const Duration(seconds: 2));
-                }
+            context: context,
+            type: CoolAlertType.confirm,
+            title: "Hasil Periksa $vhsl !",
+            text: " Lanjut Muat ?",
+            confirmBtnText: "Ya",
+            cancelBtnText: "Tidak",
+            confirmBtnColor: Colors.green,
+            onConfirmBtnTap: () async {
+              try {
+                await insertMuatIds();
                 // ignore: use_build_context_synchronously
-              });
+                CoolAlert.show(
+                    context: context,
+                    type: CoolAlertType.success,
+                    title: "Berhasil!",
+                    text: "Kemasan berhasil dimuat",
+                    autoCloseDuration: const Duration(seconds: 2));
+              } catch (e) {
+                // ignore: use_build_context_synchronously
+                CoolAlert.show(
+                    context: context,
+                    type: CoolAlertType.error,
+                    title: "Gagal!",
+                    text: "Kemasan sudah pernah dimuat",
+                    autoCloseDuration: const Duration(seconds: 2));
+              }
+            },
+          );
         } else {
           FlutterBeep.beep();
+
           try {
             await insertMuatIds();
             // ignore: use_build_context_synchronously
@@ -319,36 +321,129 @@ class _MuatDetilState extends State<MuatDetil> {
           }
         }
       }
-      //nresp = vresp?[0];
-      // if (nresp == "4") {
-      //   // ignore: use_build_context_synchronously
-      //   CoolAlert.show(
-      //     context: context,
-      //     type: CoolAlertType.confirm,
-      //     title: "$vkode : Barang sudah dapat dikeluarkan",
-      //     text: "Rekam pengeluaran ?",
-      //     confirmBtnText: 'Ya',
-      //     cancelBtnText: 'Tidak',
-      //     confirmBtnColor: Colors.green,
-      //     onConfirmBtnTap: () {},
-      //   );
-      // } else if (nresp == "N") {
-      //   // ignore: use_build_context_synchronously
-      //   CoolAlert.show(
-      //       context: context,
-      //       type: CoolAlertType.error,
-      //       title: "Tidak ditemukan!",
-      //       text: "Data barang tidak ditemukan di aplikasi",
-      //       autoCloseDuration: const Duration(seconds: 2));
-      // } else {
-      //   // ignore: use_build_context_synchronously
-      //   CoolAlert.show(
-      //       context: context,
-      //       type: CoolAlertType.warning,
-      //       title: listKemasan[0]['end_respon'],
-      //       text: "$vkode : Barang belum dapat dikeluarkan",
-      //       autoCloseDuration: const Duration(seconds: 3));
-      // }
     });
+
+    Future scanbarcode_old() async {
+      await FlutterBarcodeScanner.scanBarcode(
+              "#FFFF0000", "Kembali", false, ScanMode.BARCODE)
+          .then((String kode) async {
+        setState(() {
+          vkode = kode.toUpperCase();
+        });
+        //print(vkode);
+        vreskode = await fetchKemasan();
+        //print(listcn[0]['end_respon']);
+        if (vreskode.length > 0) {
+          vresp = vreskode[0]['no_sppb'] ?? "X";
+        } else {
+          vresp = "N";
+        }
+        String vhsl;
+        if (vresp == "N") {
+          FlutterBeep.beep(false);
+          // ignore: use_build_context_synchronously
+          CoolAlert.show(
+              context: context,
+              type: CoolAlertType.error,
+              title: "Tidak ditemukan!",
+              text: "Data kemasan tidak ditemukan di aplikasi",
+              autoCloseDuration: const Duration(seconds: 4));
+        } else if (vresp == "X" || vresp == "false") {
+          FlutterBeep.beep(false);
+          // ignore: use_build_context_synchronously
+          CoolAlert.show(
+              context: context,
+              type: CoolAlertType.error,
+              title: "Belum Dapat Dimuat!",
+              text: "Kemasan belum mendapatkan SPPB",
+              autoCloseDuration: const Duration(seconds: 2));
+        } else {
+          vhsl = vreskode[0]['hasil_periksa'];
+          if (vhsl.substring(0, 2) == "p2") {
+            vhsl = vhsl.toUpperCase();
+            FlutterBeep.beep();
+            // ignore: use_build_context_synchronously
+            CoolAlert.show(
+                context: context,
+                type: CoolAlertType.confirm,
+                text: "Hasil Periksa $vhsl ! Lanjut Muat ?",
+                confirmBtnText: "Ya",
+                cancelBtnText: "Tidak",
+                confirmBtnColor: Colors.green,
+                onConfirmBtnTap: () async {
+                  try {
+                    await insertMuatIds();
+                    // ignore: use_build_context_synchronously
+                    CoolAlert.show(
+                        context: context,
+                        type: CoolAlertType.success,
+                        title: "Berhasil!",
+                        text: "Kemasan berhasil dimuat",
+                        autoCloseDuration: const Duration(seconds: 2));
+                  } catch (e) {
+                    // ignore: use_build_context_synchronously
+                    CoolAlert.show(
+                        context: context,
+                        type: CoolAlertType.error,
+                        title: "Gagal!",
+                        text: "Kemasan sudah pernah dimuat",
+                        autoCloseDuration: const Duration(seconds: 2));
+                  }
+                  // ignore: use_build_context_synchronously
+                });
+          } else {
+            FlutterBeep.beep();
+            try {
+              await insertMuatIds();
+              // ignore: use_build_context_synchronously
+              CoolAlert.show(
+                  context: context,
+                  type: CoolAlertType.success,
+                  title: "Berhasil!",
+                  text: "Kemasan berhasil dimuat",
+                  autoCloseDuration: const Duration(seconds: 2));
+            } catch (e) {
+              // ignore: use_build_context_synchronously
+              CoolAlert.show(
+                  context: context,
+                  type: CoolAlertType.error,
+                  title: "Gagal!",
+                  text: "Kemasan sudah pernah dimuat",
+                  autoCloseDuration: const Duration(seconds: 2));
+            }
+          }
+        }
+        //nresp = vresp?[0];
+        // if (nresp == "4") {
+        //   // ignore: use_build_context_synchronously
+        //   CoolAlert.show(
+        //     context: context,
+        //     type: CoolAlertType.confirm,
+        //     title: "$vkode : Barang sudah dapat dikeluarkan",
+        //     text: "Rekam pengeluaran ?",
+        //     confirmBtnText: 'Ya',
+        //     cancelBtnText: 'Tidak',
+        //     confirmBtnColor: Colors.green,
+        //     onConfirmBtnTap: () {},
+        //   );
+        // } else if (nresp == "N") {
+        //   // ignore: use_build_context_synchronously
+        //   CoolAlert.show(
+        //       context: context,
+        //       type: CoolAlertType.error,
+        //       title: "Tidak ditemukan!",
+        //       text: "Data barang tidak ditemukan di aplikasi",
+        //       autoCloseDuration: const Duration(seconds: 2));
+        // } else {
+        //   // ignore: use_build_context_synchronously
+        //   CoolAlert.show(
+        //       context: context,
+        //       type: CoolAlertType.warning,
+        //       title: listKemasan[0]['end_respon'],
+        //       text: "$vkode : Barang belum dapat dikeluarkan",
+        //       autoCloseDuration: const Duration(seconds: 3));
+        // }
+      });
+    }
   }
 }

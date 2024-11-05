@@ -220,6 +220,7 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
                   type: CoolAlertType.error,
                   title: "Gagal!",
                   text: "Kemasan sudah pernah dimuat",
+                  //text: e.toString(),
                   autoCloseDuration: const Duration(seconds: 2));
             }
           },
@@ -242,8 +243,9 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
               context: context,
               type: CoolAlertType.error,
               title: "Gagal!",
-              text: "Kemasan sudah pernah dimuat",
-              autoCloseDuration: const Duration(seconds: 2));
+              //text: "Kemasan sudah pernah dimuat",
+              text: e.toString(),
+              autoCloseDuration: const Duration(seconds: 8));
         }
       }
 

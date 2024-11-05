@@ -269,7 +269,7 @@ class _MuatPageState extends State<MuatPage> {
         'context': {'bin_size': true},
         'domain': [],
         'fields': ['id', 'name', 'nopol', 'driver', 'state', 'jml_kemasan'],
-        'limit': 5,
+        'limit': 20,
         'order': 'id desc'
       },
       //}).then((value) {
