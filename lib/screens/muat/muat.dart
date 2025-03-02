@@ -55,7 +55,7 @@ class _MuatPageState extends State<MuatPage> {
               child: Column(
                 children: [
                   Text(
-                    'Muat Kemasan',
+                    'Muat Kemasan AMR v1.0.0',
                     style: kHeading6.copyWith(
                       color: kWhite,
                       fontWeight: FontWeight.w600,
@@ -167,7 +167,7 @@ class _MuatPageState extends State<MuatPage> {
         ),
         padding: const EdgeInsets.fromLTRB(15, 19, 15, 14),
         constraints: const BoxConstraints.expand(
-          height: 120,
+          height: 140,
         ),
         decoration: BoxDecoration(
           color: kWhite,
@@ -203,22 +203,17 @@ class _MuatPageState extends State<MuatPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Text(
-                          muatdata['nopol'].toString(),
-                          style: kSubtitle1,
-                        ),
-                        const Spacer(),
-                        Text(
-                          muatdata['driver'].toString(),
-                          style: kSubtitle2,
-                          textAlign: TextAlign.right,
-                        ),
-                      ],
+                    Text(
+                      muatdata['nopol'].toString(),
+                      style: kSubtitle1,
+                    ),
+                    Text(
+                      muatdata['driver'].toString(),
+                      style: kSubtitle2,
+                      textAlign: TextAlign.right,
                     ),
                     const SizedBox(
-                      height: 12,
+                      height: 7,
                     ),
                     LinearPercentIndicator(
                       lineHeight: 4,

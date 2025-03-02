@@ -6,10 +6,10 @@ import 'package:tbl_fotobarang/screens/bottom_nav_bar.dart';
 import 'package:tbl_fotobarang/themes.dart';
 
 // import 'package:tbl_fotobarang/pages/myhomepage.dart';
-final orpc = OdooClient("https://tps.transbenua.com");
+final orpc = OdooClient("https://andalan.oneerp.id");
 
 void main() async {
-  await orpc.authenticate('transbenua', 'tbl', 'tbl');
+  await orpc.authenticate('andalan_production', 'andalan_mobile', 'android');
   //final session = await orpc.authenticate('transbenua', 'tbl', 'tbl');
 
   runApp(const MyApp());
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'TBL - Pemuatan Barang',
+      title: 'AMR - Pemuatan Barang v1.00',
       theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
           useMaterial3: true,

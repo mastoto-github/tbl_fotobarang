@@ -103,6 +103,16 @@ class _MuatDetilState extends State<MuatDetil> {
                     ),
                   ],
                 ),
+                // Align(
+                //   alignment: Alignment.center,
+                //   child: Text(
+                //     widget.vnopol,
+                //     style: const TextStyle(
+                //         color: Colors.white,
+                //         fontSize: 24,
+                //         fontWeight: FontWeight.bold),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -141,6 +151,12 @@ class _MuatDetilState extends State<MuatDetil> {
   Widget buildListDetil(Map<String, dynamic> record) {
     final spt = record['kemasan_id'].toString();
     final gatein = record['waktu_gatein'].toString();
+    String vagen = record['kode_agen'].toString();
+    //vagen = vagen.substring(0, 4);
+    dynamic vkota = record['kota_penerima'];
+    dynamic vprov = record['provinsi_penerima'];
+    vkota = vkota is bool ? 'Kota' : vkota;
+    vprov = vprov is bool ? 'Provinsi' : vprov;
     List<String> pisah = spt.split(", ");
     String nokms = pisah[1].replaceAll("]", "");
     //nokms = nokms.replaceAll(" ", "");
@@ -149,9 +165,10 @@ class _MuatDetilState extends State<MuatDetil> {
         'assets/icons/kemasan.png',
         width: 19,
       ),
-      title: Text('$nokms -- No SPPB : ${record['no_sppb']}'),
+      title: Text('$nokms ($vagen) SPPB: ${record['no_sppb']}'),
+      isThreeLine: true,
       subtitle: Text(
-          "${record['nama_penerima']} -- Gate In : ${record['waktu_gatein']}"),
+          "${record['nama_penerima']} -- Gate In : ${record['waktu_gatein']}\n$vkota - $vprov "),
     );
   }
 
@@ -172,6 +189,9 @@ class _MuatDetilState extends State<MuatDetil> {
           'kemasan_id',
           'no_sppb',
           'nama_penerima',
+          'kota_penerima',
+          'provinsi_penerima',
+          'kode_agen',
           'waktu_gatein'
         ],
         'limit': 400,

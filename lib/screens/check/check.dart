@@ -19,12 +19,13 @@ class _CheckPageState extends State<CheckPage> {
   dynamic vkode, vreskode;
   dynamic nresp, vresp;
   dynamic listKemasan;
-  dynamic vsppb;
+  dynamic vsppb, vgatein;
+  dynamic vkota, vprov;
   String vnocn = "",
       vnokms = "",
       vhperiksa = "",
       vstakhir = "",
-      vgatein = "",
+      vagen = "",
       vhsl = "p2ph";
   dynamic vcnid;
   final tNoKemasan = TextEditingController();
@@ -250,6 +251,16 @@ class _CheckPageState extends State<CheckPage> {
                               ),
                             ),
                           ),
+                          const Spacer(),
+                          Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              "Agen: $vagen",
+                              style: kBody1.copyWith(
+                                color: kGrey,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                       //const Spacer(),
@@ -353,23 +364,51 @@ class _CheckPageState extends State<CheckPage> {
                         height: 14,
                       ),
                       //const Spacer(),
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          "Status Akhir :",
-                          style: kBody1.copyWith(
-                            color: kGrey,
+                      Row(
+                        children: [
+                          Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              "Status Akhir :",
+                              style: kBody1.copyWith(
+                                color: kGrey,
+                              ),
+                            ),
                           ),
-                        ),
+                          const Spacer(),
+                          Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              vkota ?? '--',
+                              style: kBody1.copyWith(
+                                color: kGrey,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          vstakhir ?? "--",
-                          style: kBody1.copyWith(
-                            color: kGrey,
+                      Row(
+                        children: [
+                          Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              vstakhir ?? "--",
+                              style: kBody1.copyWith(
+                                color: kGrey,
+                              ),
+                            ),
                           ),
-                        ),
+                          const Spacer(),
+                          Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              vprov ?? "--",
+                              style: kBody1.copyWith(
+                                color: kGrey,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(
                         height: 12,
@@ -453,6 +492,9 @@ class _CheckPageState extends State<CheckPage> {
         vhperiksa = vreskode[0]['hasil_periksa'];
         vstakhir = vreskode[0]['status_akhir'];
         vgatein = vreskode[0]['waktu_gatein'];
+        vkota = vreskode[0]['kota_penerima'] ?? '--';
+        vprov = vreskode[0]['provinsi_penerima'] ?? '--';
+        vagen = vreskode[0]['kode_agen'];
       } else {
         vnocn = "--";
         vnokms = "--";
@@ -478,7 +520,7 @@ class _CheckPageState extends State<CheckPage> {
       vcnid = vreskode[0]['cn_id'][0];
       vnokms = vreskode[0]['name'];
       vsppb = vreskode[0]['no_sppb'];
-      vgatein = vreskode[0]['waktu_gatein'];
+      vgatein = vreskode[0]['waktu_gatein'] ?? '--';
       if (vsppb is String) {
         vsppb = vsppb;
       } else {
@@ -486,6 +528,9 @@ class _CheckPageState extends State<CheckPage> {
       }
       vhperiksa = vreskode[0]['hasil_periksa'];
       vstakhir = vreskode[0]['status_akhir'];
+      vkota = vreskode[0]['kota_penerima'] ?? '--';
+      vprov = vreskode[0]['provinsi_penerima'] ?? '--';
+      vagen = vreskode[0]['kode_agen'];
     } else {
       vnocn = "--";
       vnokms = "--";
@@ -514,6 +559,9 @@ class _CheckPageState extends State<CheckPage> {
           'cn',
           'name',
           'no_sppb',
+          'kota_penerima',
+          'provinsi_penerima',
+          'kode_agen',
           'hasil_periksa',
           'status_akhir',
           'waktu_gatein'

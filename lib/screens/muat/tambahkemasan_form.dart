@@ -143,7 +143,16 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
         'domain': [
           ['name', '=', vkode]
         ],
-        'fields': ['id', 'name', 'no_sppb', 'hasil_periksa'],
+        'fields': [
+          'id',
+          'name',
+          'no_sppb',
+          'hasil_periksa',
+          'kota_penerima',
+          'provinsi_penerima',
+          'kode_agen',
+          'note'
+        ],
         'limit': 1,
       },
     }).then((value) {
@@ -164,6 +173,7 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
 
   Future inputKemasan() async {
     String vhsl;
+    dynamic vnote;
     vkode = snokms;
     //print(vkode);
     vreskode = await fetchKemasan();
@@ -191,14 +201,15 @@ class _TambahKemasanForm extends State<TambahKemasanForm> {
           autoCloseDuration: const Duration(seconds: 2));
     } else {
       vhsl = vreskode[0]['hasil_periksa'];
-      if (vhsl.substring(0, 2) == "p2") {
+      vnote = vnote is bool ? 'kosong' : 'ada';
+      if (vhsl.substring(0, 2) == "p2" || vnote == 'ada') {
         vhsl = vhsl.toUpperCase();
         FlutterBeep.beep();
         // ignore: use_build_context_synchronously
         CoolAlert.show(
           context: context,
           type: CoolAlertType.confirm,
-          title: "Hasil Periksa $vhsl !",
+          title: "Hasil Periksa $vhsl atau Keterangan Khusus",
           text: " Lanjut Muat ?",
           confirmBtnText: "Ya",
           cancelBtnText: "Tidak",
